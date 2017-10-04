@@ -1,0 +1,10 @@
+<div *ngIf="characterSkills">
+  <p *ngIf="characterSkills.total_sp"><strong>Total skill points:</strong> {{characterSkills.total_sp}}</p>
+  <p *ngIf="characterSkills.skills"><strong>Total skills injected:</strong> {{characterSkills.skills.length}}</p>
+  <ul *ngIf="characterSkills.skills">
+    <li *ngFor="let skill of characterSkills.skills">
+      <strong> {{skill.skill_name}} Skill ID:</strong> {{skill.skill_id}},
+      <strong>Skill level:</strong> {{skill.current_skill_level}}
+    </li>
+  </ul>
+</div>

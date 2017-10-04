@@ -1,0 +1,16 @@
+<div class="row">
+  <div class="col-xs-10 col-xs-offset-1">
+    <p><strong>Your access token:</strong></p><pre>{{accessToken}}</pre>
+  </div>
+  <div class="col-xs-10 col-xs-offset-1">
+    <div *ngIf="eveSession" class="media">
+      <div class="media-left">
+        <img *ngIf="characterPortraits" class="media-object" [src]="characterPortraits['px64x64']">
+      </div>
+      <div class="media-body">
+        <h4 class="media-heading">{{eveSession.CharacterName}}</h4>
+        <p><strong>Character ID: </strong>{{eveSession.CharacterID}}</p>
+      </div>
+    </div>
+  </div>
+</div>
