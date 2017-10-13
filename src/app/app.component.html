@@ -7,12 +7,13 @@
   </header>
   <div class="row">
     <nav class="col">
+      <a *ngIf="!isSessionActive" routerLink='/'>Login</a>
       <a routerLink="/search">Search</a>
-      <div *ngIf="isSessionActive">
+      <span *ngIf="isSessionActive">
         <a routerLink="/user">User Info</a>
         <a routerLink="/skills">Skills</a>
         <a routerLink="/" (click)="logout()">Logout</a>
-      </div>
+      </span>
     </nav>
   </div>
   <div class="row">

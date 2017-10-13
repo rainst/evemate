@@ -18,6 +18,6 @@ export class UserComponent {
   ngOnInit(): void {
     this.accessToken = this.eve.getAccessToken();
     this.eveSession = this.eve.getSession();
-    this.eve.getCharacterPortraits().then(characterPortraits => this.characterPortraits = characterPortraits);
+    // this.eve.getCharacterPortraits().then(characterPortraits => this.characterPortraits = characterPortraits);
   }
 }

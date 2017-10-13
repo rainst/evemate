@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
-import { EveSession, CharacterSkills, CharacterPortraits } from "./evesession.class";
+import { EveSession, CharacterSkills, CharacterPortraits, ItemType, ItemAttribute} from './evesession.class';
 import { Headers, Http } from '@angular/http';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
+import {  } from 'async';
 
 import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/observable/from';
+import 'rxjs/add/observable/bindCallback';
 
 @Injectable()
 export class EveService {
@@ -20,6 +23,9 @@ export class EveService {
   private accessToken: string;
   private isSessionActiveSubject: ReplaySubject<boolean> = new ReplaySubject();
   private typesCache = new Map();
+  private attributesCache = new Map();
+  private effectsCache = new Map();
+  private portraitsCache: Map<number, CharacterPortraits> = new Map();
 
   private eveSession: EveSession;
   private characterSkills: CharacterSkills;
@@ -34,6 +40,10 @@ export class EveService {
   private APICharacterSkills = 'characters/{CharacterID}/skills/';
   private APIUniverseTypes = 'universe/types/';
   private APIUniverseNames = 'universe/names/';
+  private APIDogmaAttribute = 'dogma/attributes/{attribute_id}/';
+  private APIDogmaEffect = 'dogma/effects/{effect_id}/';
+  private APISearch = 'search/';
+  private APICharactersNames = 'characters/names/';
 
   constructor(
     private http: Http,
@@ -123,8 +133,9 @@ export class EveService {
         
         this.http.get(url, {params: {token: this.accessToken}}).toPromise().then(res => {
           this.characterSkills = res.json(); //new CharacterSkills(res.json());
-          this.getItemNames(this.characterSkills.skills.map(skill => {return skill.skill_id})).then(names => {
-            names.json().forEach((name, i) => {this.characterSkills.skills[i].skill_name = name.name});
+          console.log(this.characterSkills.skills.map(skill => {return skill.skill_id}).toString())
+          this.getItemsNames(this.characterSkills.skills.map(skill => {return skill.skill_id})).then(names => {
+            names.forEach((name, i) => {this.characterSkills.skills[i].skill_name = name.name});
             resolve(this.characterSkills);
           }, console.log);
         }, console.log);
@@ -132,39 +143,123 @@ export class EveService {
     });
   }
 
-  getItemType(typeID: number): Promise<any> {
+  getItemType(typeID: number): Promise<ItemType> {
     return new Promise(resolve => {
       if (this.typesCache.has(typeID))
         resolve(this.typesCache.get(typeID));
       else {
         var url = this.APIBase + this.APIUniverseTypes + typeID.toString() + '/';
         this.http.get(url).toPromise().then(type => {
-          this.typesCache.set(typeID, type);
-          resolve(type.json());
+          var itemType = new ItemType(type.json())
+          this.typesCache.set(typeID, itemType);
+          resolve(itemType);
         }, console.log);
       }
     });
   }
 
-  getCharacterPortraits(): Promise<CharacterPortraits> {
+  getEffect(effectID: number): Promise<any> {
     return new Promise(resolve => {
-      if (this.characterPortraits)
-        resolve(this.characterPortraits);
+      if (this.effectsCache.has(effectID))
+        resolve(this.effectsCache.get(effectID));
+      else {
+        var url = this.APIBase + this.APIDogmaEffect.replace('{effect_id}', effectID.toString());
+        this.http.get(url).toPromise().then(res => {
+          // var attribute = new Attribute(type.json())
+          var effect = res.json();
+          this.effectsCache.set(effectID, effect);
+          resolve(effect);
+        }, console.log);          
+      }
+    });
+  }
+
+  getAttribute(attributeID: number): Promise<ItemAttribute> {
+    return new Promise(resolve => {
+      if (this.attributesCache.has(attributeID))
+        resolve(this.attributesCache.get(attributeID));
+      else {
+        var url = this.APIBase + this.APIDogmaAttribute.replace('{attribute_id}', attributeID.toString());
+        this.http.get(url).toPromise().then(res => {
+          // var attribute = new Attribute(type.json())
+          var attribute = new ItemAttribute(res.json());
+          this.attributesCache.set(attributeID, attribute);
+          resolve(attribute);
+        }, console.log);          
+      }
+    });
+  }
+
+  getAttributes(attributes: {attribute_id: number, value: number}[]): Promise<any> {
+    return new Promise(resolve => {
+      var newAttributes = [];
+
+      Observable.create(observer => {
+        attributes.forEach(attribute => {
+          this.getAttribute(attribute.attribute_id).then(attribute => {
+            observer.next(attribute);
+            
+            if (attributes.length == newAttributes.length)
+              observer.complete();
+          });
+        });
+      }).subscribe(attribute => newAttributes.push(attribute), null, () => resolve(newAttributes));
+    });
+  }
+
+  getEffects(effects: {effect_id: number, is_default: boolean}[]): Promise<any> {
+    return new Promise(resolve => {
+      var newEffects = [];
+
+      Observable.create(observer => {
+        
+        effects.forEach(effect => {
+          this.getEffect(effect.effect_id).then(effect => {
+            observer.next(effect);
+            
+            if (effects.length == newEffects.length)
+              observer.complete();
+          });
+        });
+      }).subscribe(effect => newEffects.push(effect), null, () => resolve(newEffects));
+    });
+  }
+
+  getCharacterPortraits(characterID: number): Promise<CharacterPortraits> {
+    return new Promise(resolve => {
+      if (this.portraitsCache.has(characterID))
+        resolve(this.portraitsCache.get(characterID));
       else {
         var url = this.APIBase + this.APICharactersPortrait;
-        url = url.replace('{CharacterID}', this.eveSession.CharacterID.toString());
-        
+        url = url.replace('{CharacterID}', characterID.toString());
         this.http.get(url).toPromise().then(res => {
-          this.characterPortraits = res.json();
-          resolve(this.characterPortraits);
+          var portrait:CharacterPortraits = res.json();
+          this.portraitsCache.set(characterID, portrait);
+          resolve(portrait);
         }, console.log);
       }
     });
   }
 
-  getItemNames(itemIDs: Array<number>): Promise<any> {
-    var url = this.APIBase + this.APIUniverseNames;
-    
-    return this.http.post(url, itemIDs).toPromise();
+  getItemsNames(itemIDs: number[]): Promise<{id:number, name:string, category:string}[]> {
+    return new Promise(resolve => {
+      var url = this.APIBase + this.APIUniverseNames;
+      this.http.post(url, itemIDs).toPromise().then(result => resolve(result.json()), console.log);
+    });
+  }
+
+  search(term, searchDomain): Promise<{id:number, name:string, category:string}[]> {
+    return new Promise(resolve => {
+      var url = this.APIBase + this.APISearch;
+      this.http.get(url, {params: {categories: searchDomain, search: term, strict: false}}).toPromise().then(res => {
+        var result = res.json();
+
+        if (result[searchDomain])
+          this.getItemsNames(result[searchDomain]).then(resolve);
+        else  
+          resolve();
+          
+      }, console.log);
+    });
   }
 }

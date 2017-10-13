@@ -1,0 +1,15 @@
+<div *ngIf="item">
+  <h1><img src="{{item.getImage()}}"> {{item.name}}</h1>
+  <p>{{item.description}}</p>
+</div>
+<div *ngIf="effects">
+  <div *ngFor="let effect of effects">
+    {{effect.name}}
+  </div>
+</div>
+<div *ngIf="attributes">
+  <div *ngFor="let attribute of attributes">
+    <h5 *ngIf="attribute.display_name">{{attribute.display_name}}</h5>
+    <p>{{attribute.description}}</p>
+  </div>
+</div>

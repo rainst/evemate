@@ -1,0 +1,22 @@
+<form (submit)="search()">
+  <div class="input-group">
+    <input class="form-control" type="text" placeholder="Search into EVE Online.." name="term" [(ngModel)]="term">
+    <span class="input-group-btn">
+      <button class="btn btn-primary" type="submit">Search</button>
+    </span>
+  </div>
+  <div *ngFor="let searchDom of searchDomains" class="form-check form-check-inline">
+    <label class="form-check-label">
+      <input class="form-check-input" type="radio" name="searchDomain" id="searchdomain_{{searchDomain.name}}" [value]="searchDom.name" [(ngModel)]="searchDomain">
+      {{searchDom.displayName}}
+    </label>
+  </div>
+</form>
+<div>
+  <p>{{status}}</p>
+  <dl *ngIf="results">
+    <dt *ngFor="let result of results">
+      <searchresult [id]="result.id" [name]="result.name" [category]="result.category"></searchresult>
+    </dt>
+  </dl>
+</div>

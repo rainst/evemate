@@ -3,7 +3,7 @@
   <p *ngIf="characterSkills.skills"><strong>Total skills injected:</strong> {{characterSkills.skills.length}}</p>
   <ul *ngIf="characterSkills.skills">
     <li *ngFor="let skill of characterSkills.skills">
-      <strong> {{skill.skill_name}} Skill ID:</strong> {{skill.skill_id}},
+      <a routerLink="/item/{{skill.skill_id}}"><strong>{{skill.skill_name}}</strong></a>
       <strong>Skill level:</strong> {{skill.current_skill_level}}
     </li>
   </ul>
