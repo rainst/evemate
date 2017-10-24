@@ -2,14 +2,18 @@
   <h1><img src="{{item.getImage()}}"> {{item.name}}</h1>
   <p>{{item.description}}</p>
 </div>
-<div *ngIf="effects">
-  <div *ngFor="let effect of effects">
-    {{effect.name}}
+<div *ngIf="attributes">
+  <h5>Attributes:</h5>
+  <div *ngFor="let attribute of attributes">
+    <p><strong>{{attribute.details.name || attribute.details.display_name}}</strong></p>
+    <p><strong>Value:</strong> {{attribute.value}} {{attribute.details.unit_id && units.get(attribute.details.unit_id).symbol}}</p>
+    <p>{{attribute.details.description}}</p>
   </div>
 </div>
-<div *ngIf="attributes">
-  <div *ngFor="let attribute of attributes">
-    <h5 *ngIf="attribute.display_name">{{attribute.display_name}}</h5>
-    <p>{{attribute.description}}</p>
+<div *ngIf="effects">
+  <h5>Effects:</h5>
+  <div *ngFor="let effect of effects">
+    <p><strong>{{effect.display_name || effect.name}}</strong></p>
+    <p>{{effect.description}}</p>
   </div>
 </div>

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { EveSession, CharacterSkills, CharacterPortraits, ItemType, ItemAttribute} from './evesession.class';
+import { EveSession, CharacterSkills} from './evesession.class';
 import { Headers, Http } from '@angular/http';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
-import {  } from 'async';
+import { EveCharactersService } from './evecharacters.service';
 
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/observable/from';
@@ -25,29 +25,23 @@ export class EveService {
   private typesCache = new Map();
   private attributesCache = new Map();
   private effectsCache = new Map();
-  private portraitsCache: Map<number, CharacterPortraits> = new Map();
+  private corporationCache: Map<number, any> = new Map();
 
   private eveSession: EveSession;
   private characterSkills: CharacterSkills;
-  private characterPortraits: CharacterPortraits;
   
   private APIAuth = 'https://login.eveonline.com/oauth/authorize/';
   private APIVerify = 'https://esi.tech.ccp.is/verify/';
   private APIBase = 'https://esi.tech.ccp.is/latest/';
-  private APICharactersPortrait ='characters/{CharacterID}/portrait/';
-  private APICharacterAttributes = 'characters/{CharacterID}/attributes/';
-  private APICharacterSkillQueue = 'characters/{CharacterID}/skillqueue/';
-  private APICharacterSkills = 'characters/{CharacterID}/skills/';
-  private APIUniverseTypes = 'universe/types/';
+  private APICorporationInfo = 'corporations/{corporation_id}/';
   private APIUniverseNames = 'universe/names/';
-  private APIDogmaAttribute = 'dogma/attributes/{attribute_id}/';
-  private APIDogmaEffect = 'dogma/effects/{effect_id}/';
   private APISearch = 'search/';
-  private APICharactersNames = 'characters/names/';
 
   constructor(
     private http: Http,
-    private cookies: CookieService) {}
+    // private characters: EveCharactersService,
+    private cookies: CookieService
+  ) {}
   
   getLoginUrl(): string {
     var loginUrl = this.APIAuth;
@@ -109,7 +103,6 @@ export class EveService {
   deleteSession(): void {
     this.accessToken = null;
     this.eveSession = undefined;
-    this.characterPortraits = undefined;
     this.characterSkills = undefined;
     this.isSessionActiveSubject.next(false);    
     this.cookies.delete('access_token');
@@ -128,7 +121,7 @@ export class EveService {
       if (this.characterSkills)
         resolve(this.characterSkills);
       else {
-        var url = this.APIBase + this.APICharacterSkills;
+        var url = this.APIBase + 'this.APICharacterSkills';
         url = url.replace('{CharacterID}', this.eveSession.CharacterID.toString());
         
         this.http.get(url, {params: {token: this.accessToken}}).toPromise().then(res => {
@@ -142,105 +135,8 @@ export class EveService {
       }
     });
   }
-
-  getItemType(typeID: number): Promise<ItemType> {
-    return new Promise(resolve => {
-      if (this.typesCache.has(typeID))
-        resolve(this.typesCache.get(typeID));
-      else {
-        var url = this.APIBase + this.APIUniverseTypes + typeID.toString() + '/';
-        this.http.get(url).toPromise().then(type => {
-          var itemType = new ItemType(type.json())
-          this.typesCache.set(typeID, itemType);
-          resolve(itemType);
-        }, console.log);
-      }
-    });
-  }
-
-  getEffect(effectID: number): Promise<any> {
-    return new Promise(resolve => {
-      if (this.effectsCache.has(effectID))
-        resolve(this.effectsCache.get(effectID));
-      else {
-        var url = this.APIBase + this.APIDogmaEffect.replace('{effect_id}', effectID.toString());
-        this.http.get(url).toPromise().then(res => {
-          // var attribute = new Attribute(type.json())
-          var effect = res.json();
-          this.effectsCache.set(effectID, effect);
-          resolve(effect);
-        }, console.log);          
-      }
-    });
-  }
-
-  getAttribute(attributeID: number): Promise<ItemAttribute> {
-    return new Promise(resolve => {
-      if (this.attributesCache.has(attributeID))
-        resolve(this.attributesCache.get(attributeID));
-      else {
-        var url = this.APIBase + this.APIDogmaAttribute.replace('{attribute_id}', attributeID.toString());
-        this.http.get(url).toPromise().then(res => {
-          // var attribute = new Attribute(type.json())
-          var attribute = new ItemAttribute(res.json());
-          this.attributesCache.set(attributeID, attribute);
-          resolve(attribute);
-        }, console.log);          
-      }
-    });
-  }
-
-  getAttributes(attributes: {attribute_id: number, value: number}[]): Promise<any> {
-    return new Promise(resolve => {
-      var newAttributes = [];
-
-      Observable.create(observer => {
-        attributes.forEach(attribute => {
-          this.getAttribute(attribute.attribute_id).then(attribute => {
-            observer.next(attribute);
-            
-            if (attributes.length == newAttributes.length)
-              observer.complete();
-          });
-        });
-      }).subscribe(attribute => newAttributes.push(attribute), null, () => resolve(newAttributes));
-    });
-  }
-
-  getEffects(effects: {effect_id: number, is_default: boolean}[]): Promise<any> {
-    return new Promise(resolve => {
-      var newEffects = [];
-
-      Observable.create(observer => {
-        
-        effects.forEach(effect => {
-          this.getEffect(effect.effect_id).then(effect => {
-            observer.next(effect);
-            
-            if (effects.length == newEffects.length)
-              observer.complete();
-          });
-        });
-      }).subscribe(effect => newEffects.push(effect), null, () => resolve(newEffects));
-    });
-  }
-
-  getCharacterPortraits(characterID: number): Promise<CharacterPortraits> {
-    return new Promise(resolve => {
-      if (this.portraitsCache.has(characterID))
-        resolve(this.portraitsCache.get(characterID));
-      else {
-        var url = this.APIBase + this.APICharactersPortrait;
-        url = url.replace('{CharacterID}', characterID.toString());
-        this.http.get(url).toPromise().then(res => {
-          var portrait:CharacterPortraits = res.json();
-          this.portraitsCache.set(characterID, portrait);
-          resolve(portrait);
-        }, console.log);
-      }
-    });
-  }
-
+  
+  // Resolve a set of IDs to names and categories. Supported ID's for resolving are: Characters, Corporations, Alliances, Stations, Solar Systems, Constellations, Regions, Types.
   getItemsNames(itemIDs: number[]): Promise<{id:number, name:string, category:string}[]> {
     return new Promise(resolve => {
       var url = this.APIBase + this.APIUniverseNames;
@@ -258,8 +154,28 @@ export class EveService {
           this.getItemsNames(result[searchDomain]).then(resolve);
         else  
           resolve();
-          
+
       }, console.log);
     });
+  }
+
+  getCorporationInfo(corporationID: number): Promise<any> {
+    return new Promise(resolve => {
+      if (this.corporationCache.has(corporationID))
+        resolve (this.corporationCache.get(corporationID));
+      else {
+        var url = (this.APIBase + this.APICorporationInfo).replace('{corporation_id}', corporationID.toString());
+
+        this.http.get(url).toPromise().then(res => {
+          var result = res.json();
+          this.corporationCache.set(corporationID, result);
+          resolve(result);
+        }, console.log);
+      }
+    });
+  }
+
+  APIget(urlComponent: string): Promise<any> {
+    return this.http.get(this.APIBase + urlComponent).toPromise();
   }
 }

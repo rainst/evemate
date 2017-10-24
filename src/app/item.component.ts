@@ -1,44 +1,49 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EveService } from "./eve.service";
-import { ItemType } from "./evesession.class";
+import { EveTypesService, EveType, DogmaAttribute, DogmaEffect } from './evetypes.service';
+import { EveUnits } from './eve.class';
 
 @Component({
-  selector: 'selector',
   templateUrl: 'item.component.html'
 })
 export class ItemComponent implements OnInit {
-  private item: ItemType;
-  private attributes;
-  private effects;
+  private typeID: number;
+  private item: EveType;
+  private attributes: {value: number, details: DogmaAttribute}[];
+  private effects: DogmaEffect[];
+  private units: EveUnits = new EveUnits();
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private eve: EveService
+    private eve: EveService,
+    private types: EveTypesService
   ) { }
 
   ngOnInit() { 
     this.route.params.subscribe(data => {
-      if (! data.id)
-        this.router.navigate(['/skills']);
-      else
-        this.eve.getItemType(data.id).then(item => {
-          this.item = item;
-          console.log(item);
-          
-          if (item.dogma_attributes)
-            this.eve.getAttributes(item.dogma_attributes).then(attributes => {
-              console.log(attributes)
-              this.attributes = attributes;
-            });
+      this.typeID = parseInt(data.id, 10);
+      this.types.get(this.typeID).then(item => {
+        console.log(item);
+        this.item = item;
+        this.attributes = [];
+        this.effects = [];
 
-          if (item.dogma_effects)
-            this.eve.getEffects(item.dogma_effects).then(effects => {
-              console.log(effects)
-              this.effects = effects;
-            });
+        item.dogma_attributes.forEach(attribute => {
+          this.types.getAttribute(attribute.attribute_id).then(attributeDetails => {
+            // console.log(attributeDetails)
+            this.attributes.push({value: attribute.value, details: attributeDetails});
+          });
         });
+
+        item.dogma_effects.forEach(effect => {
+          this.types.getEffect(effect.effect_id).then(effect => {
+            console.log(effect)
+            this.effects.push(effect);
+          });
+        });
+      });
     })
   }
 

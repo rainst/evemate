@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EveService } from './eve.service';
-import { EveSession, CharacterPortraits } from "./evesession.class";
+import { EveSession } from "./evesession.class";
 
 @Component({
   templateUrl: './user.component.html'
@@ -9,7 +9,7 @@ import { EveSession, CharacterPortraits } from "./evesession.class";
 export class UserComponent {
   private accessToken: string;
   private eveSession: EveSession;
-  private characterPortraits: CharacterPortraits;
+  private characterPortraits: any;
   
   constructor(
     private eve: EveService

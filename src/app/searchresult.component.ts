@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { EveService } from './eve.service';
-import { CharacterPortraits, ItemType } from './evesession.class';
+import { EveCharactersService } from './evecharacters.service';
+import { EveTypesService } from './evetypes.service';
 
 @Component({
   selector: 'searchresult',
@@ -13,30 +14,35 @@ export class SearchResultComponent implements OnInit {
 
   private iconUrl: string;
   private description: string;
-  private resultURL: string;
+  private resultUrl: string;
 
   constructor(
-    private eve: EveService
+    private eve: EveService,
+    private characters: EveCharactersService,
+    private types: EveTypesService
   ) { }
 
   ngOnInit() {
     switch (this.category) {
       case 'character':
-        this.resultURL = '/character/' + this.id;
-        this.eve.getCharacterPortraits(this.id).then(portraits => this.iconUrl = portraits.px64x64);
+        this.characters.getPortraits(this.id).then(portraits => this.iconUrl = portraits.px64x64);
+        this.resultUrl = '/character/' + this.id;
         break;
-        case 'inventorytype':
-        this.resultURL = '/item/' + this.id;
-        this.eve.getItemType(this.id).then(item => {
+      case 'inventory_type':
+        this.resultUrl = '/item/' + this.id;
+        this.types.get(this.id).then(item => {
           this.iconUrl = item.getImage();
           this.description = item.description;
         });
+        break;  
+      case 'corporation':
+        this.resultUrl = '/corporation/' + this.id;
         break;
-        
-        case 'corporation':
-          this.resultURL = '/corporation/' + this.id;
+      case 'solar_system':
+        this.resultUrl = '/system/' + this.id;
         break;
       default:
+        this.resultUrl = '/' + this.category + '/' + this.id;
         break;
     }
   }

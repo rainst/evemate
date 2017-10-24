@@ -1,0 +1,31 @@
+<h5>{{name}}</h5>
+<p>ID: {{systemID}}</p>
+<p>Constellation: <a routerLink="/constellation/{{constellationID}}">{{constellationID}}</a></p>
+<div *ngIf="planets">
+  <h5>Planets ({{planets.length}}):</h5>
+  <dl *ngFor="let planet of planets">
+    <dt>
+      <p><a routerLink="/planet/{{planet.planet_id}}">{{planet.planet_id}}</a></p>
+      <div *ngIf="planet.moons">
+        <p>Moons ({{planet.moons.length}}):</p>
+        <ul>
+          <li *ngFor="let moon of planet.moons"><a routerLink="/moon/{{moon}}">{{moon}}</a></li>
+        </ul>
+      </div>
+    </dt>
+  </dl>
+</div>
+
+<div *ngIf="stations">
+  <h5>Stations ({{stations.length}})</h5>
+  <dl *ngFor="let station of stations">
+    <dt><a routerLink="/station/{{station}}">{{station}}</a></dt>
+  </dl>
+</div>
+
+<div *ngIf="stargates">
+    <h5>Stargates ({{stargates.length}})</h5>
+    <dl *ngFor="let stargate of stargates">
+      <dt><a routerLink="/stargate/{{stargate}}">{{stargate}}</a></dt>
+    </dl>
+  </div>
