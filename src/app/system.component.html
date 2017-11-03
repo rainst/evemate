@@ -1,10 +1,42 @@
 <h5>{{name}}</h5>
 <p>ID: {{systemID}}</p>
-<p>Constellation: <a routerLink="/constellation/{{constellationID}}">{{constellationID}}</a></p>
+<p *ngIf="constellation">Constellation: <a routerLink="/constellation/{{constellation.id}}">{{constellation.name}}</a></p>
+
+<div *ngIf="faction || alliance || corporation">
+  <h5>Sovereignty</h5>
+  <p>
+    <span *ngIf="faction">
+      Faction: <a routerLink="/faction/{{faction.faction_id}}">{{faction.name}}</a>
+    </span>
+    <span *ngIf="alliance">
+      Alliance: <a routerLink="/alliance/{{alliance.id}}">{{alliance.alliance_name}} [{{alliance.ticker}}]</a><br>
+    </span>
+    <span *ngIf="corporation">
+      Corporation: <a routerLink="/corporation/{{corporation.id}}">{{corporation.corporation_name}} [{{corporation.ticker}}]</a>
+    </span>
+  </p>
+</div>
+
+<div *ngIf="campaigns">
+  <h5>Events</h5>
+  <dl>
+    <dd *ngFor="let campaign of campaigns">
+      <p>Event type: {{campaign.event_type}}<br>Start date: {{campaign.start_time}}</p>
+    </dd>
+  </dl>
+</div>
+
+<div *ngIf="stations">
+  <h5>Stations ({{stations.length}})</h5>
+  <dl *ngFor="let station of stations">
+    <dt><a routerLink="/station/{{station.id}}">{{station.name}}</a></dt>
+  </dl>
+</div>
+
 <div *ngIf="planets">
   <h5>Planets ({{planets.length}}):</h5>
-  <dl *ngFor="let planet of planets">
-    <dt>
+  <dl>
+    <dt *ngFor="let planet of planets">
       <p><a routerLink="/planet/{{planet.planet_id}}">{{planet.planet_id}}</a></p>
       <div *ngIf="planet.moons">
         <p>Moons ({{planet.moons.length}}):</p>
@@ -16,16 +48,9 @@
   </dl>
 </div>
 
-<div *ngIf="stations">
-  <h5>Stations ({{stations.length}})</h5>
-  <dl *ngFor="let station of stations">
-    <dt><a routerLink="/station/{{station}}">{{station}}</a></dt>
+<div *ngIf="stargates">
+  <h5>Stargates ({{stargates.length}})</h5>
+  <dl *ngFor="let stargate of stargates">
+    <dt><a routerLink="/stargate/{{stargate}}">{{stargate}}</a></dt>
   </dl>
 </div>
-
-<div *ngIf="stargates">
-    <h5>Stargates ({{stargates.length}})</h5>
-    <dl *ngFor="let stargate of stargates">
-      <dt><a routerLink="/stargate/{{stargate}}">{{stargate}}</a></dt>
-    </dl>
-  </div>

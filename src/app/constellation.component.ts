@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EveConstellationsService } from './eveconstellations.service';
+import { EveService } from './eve.service';
+import { NameModel } from './eve.class';
 
 @Component({
   templateUrl: 'constellation.component.html'
@@ -9,12 +11,13 @@ import { EveConstellationsService } from './eveconstellations.service';
 export class ConstellationComponent implements OnInit {
   private constellationID: number;
   private name: string;
-  private systems: number[];
-  private regionID: number;
+  private systems: NameModel[];
+  private region: NameModel;
   
   constructor(
     private route: ActivatedRoute,
-    private constellations: EveConstellationsService
+    private constellations: EveConstellationsService,
+    private eve: EveService
   ) { }
 
   ngOnInit() { 
@@ -23,10 +26,9 @@ export class ConstellationComponent implements OnInit {
       this.constellations.get(this.constellationID).then(constellation => {
         console.log(constellation);
         this.name = constellation.name;
-        this.regionID = constellation.region_id;
+        this.region = constellation.region;
         this.systems = constellation.systems;
       });
     });
   }
-
 }

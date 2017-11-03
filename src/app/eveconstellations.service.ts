@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { EveService } from './eve.service';
-import { BaseEveModel } from './eve.class';
+import { BaseEveModel, NameModel } from './eve.class';
 
 export class Constellation extends BaseEveModel {
   name: string;
-  systems: number[];
+  systems: NameModel[];
   constellation_id: number;
   region_id: number;
+  region: NameModel;
   position: {x:number, y:number, z:number}
 }
 
@@ -24,9 +25,15 @@ export class EveConstellationsService {
         resolve(this.constellations.get(constellationID));
       else
         this.eve.APIget(this.APIRegionInfo.replace('{ConstellationID}', constellationID.toString())).then(res => {
-          var system = new Constellation(res.json());
-          this.constellations.set(constellationID, system);
-          resolve(system)
+          var rawConstellation = res.json();
+
+          this.eve.getItemNames(Array.prototype.concat(rawConstellation.region_id, rawConstellation.systems)).then(names => {
+            rawConstellation.region = names.find(name => {return name.id === rawConstellation.region_id});
+            rawConstellation.systems = names.filter(name => {return rawConstellation.systems.includes(name.id)});
+            var constellation = new Constellation(rawConstellation);
+            this.constellations.set(constellationID, constellation);
+            resolve(constellation);
+          });
         });
     });
   }

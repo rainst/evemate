@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { EveCharactersService } from './evecharacters.service';
+import { NameModel } from './eve.class';
 
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/observable/from';
@@ -127,7 +128,7 @@ export class EveService {
         this.http.get(url, {params: {token: this.accessToken}}).toPromise().then(res => {
           this.characterSkills = res.json(); //new CharacterSkills(res.json());
           console.log(this.characterSkills.skills.map(skill => {return skill.skill_id}).toString())
-          this.getItemsNames(this.characterSkills.skills.map(skill => {return skill.skill_id})).then(names => {
+          this.getItemNames(this.characterSkills.skills.map(skill => {return skill.skill_id})).then(names => {
             names.forEach((name, i) => {this.characterSkills.skills[i].skill_name = name.name});
             resolve(this.characterSkills);
           }, console.log);
@@ -137,21 +138,21 @@ export class EveService {
   }
   
   // Resolve a set of IDs to names and categories. Supported ID's for resolving are: Characters, Corporations, Alliances, Stations, Solar Systems, Constellations, Regions, Types.
-  getItemsNames(itemIDs: number[]): Promise<{id:number, name:string, category:string}[]> {
+  getItemNames(itemIDs: number[]): Promise<NameModel[]> {
     return new Promise(resolve => {
       var url = this.APIBase + this.APIUniverseNames;
       this.http.post(url, itemIDs).toPromise().then(result => resolve(result.json()), console.log);
     });
   }
 
-  search(term, searchDomain): Promise<{id:number, name:string, category:string}[]> {
+  search(term, searchDomain): Promise<NameModel[]> {
     return new Promise(resolve => {
       var url = this.APIBase + this.APISearch;
       this.http.get(url, {params: {categories: searchDomain, search: term, strict: false}}).toPromise().then(res => {
         var result = res.json();
 
         if (result[searchDomain])
-          this.getItemsNames(result[searchDomain]).then(resolve);
+          this.getItemNames(result[searchDomain]).then(resolve);
         else  
           resolve();
 

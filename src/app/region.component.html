@@ -1,9 +1,14 @@
-<h5>{{name}}</h5>
-<p>ID: {{regionID}}</p>
-<p>{{description}}</p>
-<div *ngIf="constellations">
-  <h5>Constellations ({{constellations.length}})</h5>
-  <dl *ngFor="let constellation of constellations">
-    <dt><a routerLink="/constellation/{{constellation}}">{{constellation}}</a></dt>
-  </dl>
+<div *ngIf="regionID">
+  <h5>{{name}}</h5>
+  <p>ID: {{regionID}}</p>
+  <p>{{description}}</p>
+  <div *ngIf="constellations">
+    <h5>Constellations ({{constellations.length}})</h5>
+    <dl *ngFor="let constellation of constellations">
+      <dt><a routerLink="/constellation/{{constellation.id}}">{{constellation.name}}</a></dt>
+    </dl>
+  </div>
 </div>
+<ul *ngIf="regionList">
+  <li *ngFor="let region of regionList"><a routerLink="/region/{{region.id}}">{{region.name}}</a></li>
+</ul>

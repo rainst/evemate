@@ -4,14 +4,14 @@ import { BaseEveModel } from './eve.class';
 
 export class Campaign extends BaseEveModel {
   solar_system_id: number;
+  structure_id: number;
   campaign_id: number;
   constellation_id: number;
-  defender_id: number;
-  attackers_score: number;
+  defender_id?: number;
+  attackers_score?: number;
   defender_score?: number;
   event_type: string; //'tcu_defense', 'ihub_defense', 'station_defense', 'station_freeport'
   start_time: Date;
-  structure_id: number;
   partecipants?: number[];
 
   constructor (rawData) {
@@ -29,26 +29,26 @@ export class Sovereignty extends BaseEveModel {
 }
 
 export class StructureTimer extends BaseEveModel {
-  structure_id: number;
   solar_system_id: number;
+  structure_id: number;
   alliance_id: number;
   structure_type_id: number;
-  vulnerability_occupancy_level: number; // AKA ADM in game
-  vulnerable_start_time: Date;
-  vulnerable_end_time: Date;
+  vulnerability_occupancy_level?: number; // AKA ADM in game
+  vulnerable_start_time?: Date;
+  vulnerable_end_time?: Date;
 
   constructor (rawData) {
     super(rawData);
 
-    this.vulnerable_start_time = new Date(rawData.vulnerable_start_time);
-    this.vulnerable_end_time = new Date(rawData.vulnerable_end_time);
+    rawData.vulnerable_start_time && (this.vulnerable_start_time = new Date(rawData.vulnerable_start_time));
+    rawData.vulnerable_end_time && (this.vulnerable_end_time = new Date(rawData.vulnerable_end_time));
   }
 }
 
 @Injectable()
 
 export class EveSovereigntyService {
-  private campaigns: Map<number, Campaign> = new Map();
+  private campaigns: Campaign[];
   private sovereignties: Map<number, Sovereignty> = new Map();
   private structureTimers: Map<number, StructureTimer> = new Map();
   private APISovCampaigns = 'sovereignty/campaigns/'; //5 sec cache
@@ -57,19 +57,20 @@ export class EveSovereigntyService {
   
   constructor(private eve: EveService) {}
 
-  getCampaign(systemID: number): Promise<Campaign> {
+  getCampaignsInSystem(systemID: number): Promise<Campaign[]> {
     return new Promise(resolve => {
-      if (this.campaigns.has(systemID))
-        resolve(this.campaigns.get(systemID));
+      if (this.campaigns && this.campaigns.length)
+        resolve(this.campaigns.filter(campaign => {return campaign.solar_system_id === systemID}));
       else
         this.eve.APIget(this.APISovCampaigns).then(res => {
-          this.campaigns.clear();
+          this.campaigns = [];
           var campaigns:any[] = res.json();
+
           campaigns.forEach(item => {
             var campaign = new Campaign(item);
-            this.campaigns.set(campaign.solar_system_id, campaign);
+            this.campaigns.push(campaign);
           });
-          resolve(this.campaigns.get(systemID));
+          resolve(this.campaigns.filter(campaign => {return campaign.solar_system_id === systemID}));
         });
     });
   }
