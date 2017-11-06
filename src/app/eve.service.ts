@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
+import { EveAPIService } from './eveapi.service';
+import { EveNamesService } from './evenames.service';
+
+//old imports..
 import { EveSession, CharacterSkills} from './evesession.class';
-import { Headers, Http } from '@angular/http';
+import { Headers } from '@angular/http';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { EveCharactersService } from './evecharacters.service';
-import { NameModel } from './eve.class';
+// import { EveNamesService, NameModel } from './evenames.service';
 
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/observable/from';
@@ -23,25 +27,18 @@ export class EveService {
   ];
   private accessToken: string;
   private isSessionActiveSubject: ReplaySubject<boolean> = new ReplaySubject();
-  private typesCache = new Map();
-  private attributesCache = new Map();
-  private effectsCache = new Map();
-  private corporationCache: Map<number, any> = new Map();
 
   private eveSession: EveSession;
   private characterSkills: CharacterSkills;
   
   private APIAuth = 'https://login.eveonline.com/oauth/authorize/';
   private APIVerify = 'https://esi.tech.ccp.is/verify/';
-  private APIBase = 'https://esi.tech.ccp.is/latest/';
-  private APICorporationInfo = 'corporations/{corporation_id}/';
-  private APIUniverseNames = 'universe/names/';
   private APISearch = 'search/';
 
   constructor(
-    private http: Http,
-    // private characters: EveCharactersService,
-    private cookies: CookieService
+    private api: EveAPIService,
+    private cookies: CookieService,
+    private names: EveNamesService
   ) {}
   
   getLoginUrl(): string {
@@ -98,7 +95,7 @@ export class EveService {
     
   verifyToken(token): Promise<any> {
     var headers = new Headers({Authorization: 'Bearer ' + token});
-    return this.http.get(this.APIVerify, {headers: headers}).toPromise();
+    return this.api.get(this.APIVerify, {headers: headers});
   }
   
   deleteSession(): void {
@@ -122,61 +119,32 @@ export class EveService {
       if (this.characterSkills)
         resolve(this.characterSkills);
       else {
-        var url = this.APIBase + 'this.APICharacterSkills';
+        var url = 'this.APIBase' + 'this.APICharacterSkills';
         url = url.replace('{CharacterID}', this.eveSession.CharacterID.toString());
         
-        this.http.get(url, {params: {token: this.accessToken}}).toPromise().then(res => {
+        this.api.get(url, {params: {token: this.accessToken}}).then(res => {
           this.characterSkills = res.json(); //new CharacterSkills(res.json());
           console.log(this.characterSkills.skills.map(skill => {return skill.skill_id}).toString())
-          this.getItemNames(this.characterSkills.skills.map(skill => {return skill.skill_id})).then(names => {
-            names.forEach((name, i) => {this.characterSkills.skills[i].skill_name = name.name});
-            resolve(this.characterSkills);
-          }, console.log);
+          // this.names.getNames(this.characterSkills.skills.map(skill => {return skill.skill_id})).then(names => {
+          //   names.forEach((name, i) => {this.characterSkills.skills[i].skill_name = name.name});
+          //   resolve(this.characterSkills);
+          // }, console.log);
         }, console.log);
       }
     });
   }
-  
-  // Resolve a set of IDs to names and categories. Supported ID's for resolving are: Characters, Corporations, Alliances, Stations, Solar Systems, Constellations, Regions, Types.
-  getItemNames(itemIDs: number[]): Promise<NameModel[]> {
-    return new Promise(resolve => {
-      var url = this.APIBase + this.APIUniverseNames;
-      this.http.post(url, itemIDs).toPromise().then(result => resolve(result.json()), console.log);
-    });
-  }
 
-  search(term, searchDomain): Promise<NameModel[]> {
+  search(term, searchDomain): Promise<any> {
     return new Promise(resolve => {
-      var url = this.APIBase + this.APISearch;
-      this.http.get(url, {params: {categories: searchDomain, search: term, strict: false}}).toPromise().then(res => {
+      this.api.get(this.APISearch, {params: {categories: searchDomain, search: term, strict: false}}).then(res => {
         var result = res.json();
 
         if (result[searchDomain])
-          this.getItemNames(result[searchDomain]).then(resolve);
+          this.names.getNames(result[searchDomain]).then(resolve);
         else  
           resolve();
 
       }, console.log);
     });
-  }
-
-  getCorporationInfo(corporationID: number): Promise<any> {
-    return new Promise(resolve => {
-      if (this.corporationCache.has(corporationID))
-        resolve (this.corporationCache.get(corporationID));
-      else {
-        var url = (this.APIBase + this.APICorporationInfo).replace('{corporation_id}', corporationID.toString());
-
-        this.http.get(url).toPromise().then(res => {
-          var result = res.json();
-          this.corporationCache.set(corporationID, result);
-          resolve(result);
-        }, console.log);
-      }
-    });
-  }
-
-  APIget(urlComponent: string): Promise<any> {
-    return this.http.get(this.APIBase + urlComponent).toPromise();
   }
 }

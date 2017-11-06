@@ -12,12 +12,6 @@ export class BaseEveModel {
   }
 }
 
-export class NameModel {
-  name: string;
-  id: number;
-  category: string;
-}
-
 export class EveUnits {
   units: {id: number, type: string, name:string, symbol:string, description?:string}[] = [
     {id: 1, type: 'Length', symbol: 'm', name: 'Meter'},

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { EveService } from './eve.service';
-import { BaseEveModel, NameModel } from './eve.class';
+import { BaseEveModel } from './eve.class';
+import { NameModel } from './evenames.service';
+import { EveAPIService } from './eveapi.service';
 
 export class Corporation extends BaseEveModel {
   id: number;
@@ -39,14 +40,14 @@ export class EveCorporationsService {
   private APICorporationMembers = 'corporations/{corporation_id}/members/';
   private APICorporationIcon = 'corporations/{corporation_id}/icons/';
   
-  constructor(private eve: EveService) { }
+  constructor(private api: EveAPIService) { }
 
   get(corporationID: number): Promise<Corporation> {
     return new Promise(resolve => {
       if (this.corporations.has(corporationID))
         resolve(this.corporations.get(corporationID));
       else
-        this.eve.APIget(this.APICorporation.replace('{corporation_id}', corporationID.toString())).then(res => {
+        this.api.get(this.APICorporation.replace('{corporation_id}', corporationID.toString())).then(res => {
           var corporation = res.json();
           corporation.id = corporationID;
           this.corporations.set(corporationID, corporation);
@@ -60,7 +61,7 @@ export class EveCorporationsService {
       if (this.corporationsIcon.has(corporationID))
         resolve(this.corporationsIcon.get(corporationID));
       else
-        this.eve.APIget(this.APICorporationIcon.replace('{corporation_id}', corporationID.toString())).then(res => {
+        this.api.get(this.APICorporationIcon.replace('{corporation_id}', corporationID.toString())).then(res => {
           var icon = new CorporationIcon(res.json());
           this.corporationsIcon.set(corporationID, icon);
           resolve(icon);

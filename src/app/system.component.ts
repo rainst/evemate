@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EveSystemsService } from './evesystems.service';
 import { EveSovereigntyService, Campaign } from './evesovereignty.service';
-import { NameModel } from './eve.class';
+import { NameModel } from './evenames.service';
 import { EveCorporationsService, Corporation } from './evecorporations.service';
 import { EveAlliancesService, Alliance } from './evealliances.service';
 import { EveFactionsService, Faction } from './evefactions.service';
@@ -65,6 +65,7 @@ export class SystemComponent implements OnInit {
         if (campaigns && campaigns.length) {
           this.campaigns = campaigns;
           campaigns.forEach(campaign => {
+            console.log(campaign)
             this.sovereignty.getStructureTimer(campaign.structure_id).then(console.log);
           });
         }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EveService } from './eve.service';
+import { EveAPIService } from './eveapi.service';
 import { BaseEveModel } from './eve.class';
 
 export class Station extends BaseEveModel {
@@ -24,14 +24,14 @@ export class EveStationsService {
 
   private APIStation = 'universe/stations/{station_id}/';
   
-  constructor(private eve: EveService) {}
+  constructor(private api: EveAPIService) {}
 
   get(stationID: number): Promise<Station> {
     return new Promise(resolve => {
       if (this.stations.has(stationID))
         resolve(this.stations.get(stationID));
       else
-        this.eve.APIget(this.APIStation.replace('{station_id}', stationID.toString())).then(res => {
+        this.api.get(this.APIStation.replace('{station_id}', stationID.toString())).then(res => {
           var station = new Station(res.json());
           this.stations.set(stationID, station);
           resolve(station);

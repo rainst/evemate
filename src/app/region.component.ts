@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { EveRegionsService } from './everegions.service';
-import { NameModel } from './eve.class';
+import { EveRegionsService, Region } from './everegions.service';
+import { NameModel } from './evenames.service';
 
 @Component({
   templateUrl: 'region.component.html'
 })
 
 export class RegionComponent implements OnInit {
-  private regionID: number;
+
+  private region: Region;
+
   private name: string;
   private description: string;
   private constellations: NameModel[];
@@ -20,13 +22,11 @@ export class RegionComponent implements OnInit {
 
   ngOnInit() { 
     this.route.params.subscribe(params => {
-      this.regionID = parseInt(params.id, 10);
-      if (this.regionID)
-        this.regions.get(this.regionID).then(region => {
+      var regionID = parseInt(params.id, 10);
+      if (regionID)
+        this.regions.get(regionID).then(region => {
           console.log(region);
-          this.name = region.name;
-          this.description = region.description;
-          this.constellations = region.constellations;
+          this.region = region;
         });
       else
         this.regions.getAll().then(regions => {

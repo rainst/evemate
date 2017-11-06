@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EveService } from './eve.service';
+import { EveAPIService } from './eveapi.service';
 import { BaseEveModel } from './eve.class';
 
 class Character extends BaseEveModel {
@@ -39,7 +39,7 @@ export class EveCharactersService {
   private APICharactersNames = 'characters/names/';
   
   constructor(
-    private eve: EveService
+    private api: EveAPIService
   ) {}
 
   get(characterID: number): Promise<Character> {
@@ -47,7 +47,7 @@ export class EveCharactersService {
       if (this.characters.has(characterID))
         resolve(this.characters.get(characterID));
       else
-        this.eve.APIget(this.APICharacterInfo.replace('{CharacterID}', characterID.toString())).then(res => {
+        this.api.get(this.APICharacterInfo.replace('{CharacterID}', characterID.toString())).then(res => {
           var character = new Character(res.json());
           this.characters.set(characterID, character);
           resolve(character);
@@ -60,7 +60,7 @@ export class EveCharactersService {
       if (this.portraits.has(characterID))
         resolve(this.portraits.get(characterID));
       else
-        this.eve.APIget(this.APICharactersPortrait.replace('{CharacterID}', characterID.toString())).then(res => {
+        this.api.get(this.APICharactersPortrait.replace('{CharacterID}', characterID.toString())).then(res => {
           var portraits = new CharacterPortraits(res.json());
           this.portraits.set(characterID, portraits);
           resolve(portraits);

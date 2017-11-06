@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { EveService } from './eve.service';
-import { BaseEveModel, NameModel } from './eve.class';
+import { EveAPIService } from './eveapi.service';
+import { BaseEveModel } from './eve.class';
+import { EveNamesService, NameModel } from './evenames.service';
 
 export class Alliance extends BaseEveModel {
   id: number;
@@ -33,14 +34,17 @@ export class EveAlliancesService {
   private APIAllianceCorporations = 'alliances/{alliance_id}/corporations/';
   private APIAllianceIcon = 'alliances/{alliance_id}/icons/';
 
-  constructor(private eve: EveService) { }
+  constructor(
+    private api: EveAPIService,
+    private names: EveNamesService
+  ) { }
 
   get(allianceID: number): Promise<Alliance> {
     return new Promise(resolve => {
       if (this.alliances.has(allianceID))
         resolve(this.alliances.get(allianceID));
       else
-        this.eve.APIget(this.APIAlliance.replace('{alliance_id}', allianceID.toString())).then(res => {
+        this.api.get(this.APIAlliance.replace('{alliance_id}', allianceID.toString())).then(res => {
           var alliance = new Alliance(res.json());
           alliance.id = allianceID;
           this.alliances.set(allianceID, alliance);
@@ -54,7 +58,7 @@ export class EveAlliancesService {
       if (this.alliancesIcon.has(allianceID))
         resolve(this.alliancesIcon.get(allianceID));
       else
-        this.eve.APIget(this.APIAllianceIcon.replace('{alliance_id}', allianceID.toString())).then(res => {
+        this.api.get(this.APIAllianceIcon.replace('{alliance_id}', allianceID.toString())).then(res => {
           var icon = new AllianceIcon(res.json());
           this.alliancesIcon.set(allianceID, icon);
           resolve(icon);
@@ -67,8 +71,8 @@ export class EveAlliancesService {
       if (this.corporationLists.has(allianceID))
         resolve(this.corporationLists.get(allianceID));
       else
-        this.eve.APIget(this.APIAllianceCorporations.replace('{alliance_id}', allianceID.toString())).then(res => {
-          this.eve.getItemNames(res.json()).then(list => {
+        this.api.get(this.APIAllianceCorporations.replace('{alliance_id}', allianceID.toString())).then(res => {
+          this.names.getNames(res.json()).then(list => {
             this.corporationLists.set(allianceID, list);
             resolve(list);
           });

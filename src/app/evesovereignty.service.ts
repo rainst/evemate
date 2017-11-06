@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EveService } from './eve.service';
+import { EveAPIService } from './eveapi.service';
 import { BaseEveModel } from './eve.class';
 
 export class Campaign extends BaseEveModel {
@@ -55,14 +55,14 @@ export class EveSovereigntyService {
   private APISovereignty = 'sovereignty/map/';
   private APISovStructures = 'sovereignty/structures/'; //120 sec cache
   
-  constructor(private eve: EveService) {}
+  constructor(private api: EveAPIService) {}
 
   getCampaignsInSystem(systemID: number): Promise<Campaign[]> {
     return new Promise(resolve => {
       if (this.campaigns && this.campaigns.length)
         resolve(this.campaigns.filter(campaign => {return campaign.solar_system_id === systemID}));
       else
-        this.eve.APIget(this.APISovCampaigns).then(res => {
+        this.api.get(this.APISovCampaigns).then(res => {
           this.campaigns = [];
           var campaigns:any[] = res.json();
 
@@ -80,7 +80,7 @@ export class EveSovereigntyService {
       if (this.sovereignties.has(systemID))
         resolve(this.sovereignties.get(systemID));
       else
-        this.eve.APIget(this.APISovereignty).then(res => {
+        this.api.get(this.APISovereignty).then(res => {
           this.sovereignties.clear();
           var sovereignties:any[] = res.json();
           sovereignties.forEach(item => {
@@ -97,7 +97,7 @@ export class EveSovereigntyService {
       if (this.structureTimers.has(structureID))
         resolve(this.structureTimers.get(structureID));
       else
-        this.eve.APIget(this.APISovCampaigns).then(res => {
+        this.api.get(this.APISovStructures).then(res => {
           this.structureTimers.clear();
           var structures:any[] = res.json();
           structures.forEach(item => {

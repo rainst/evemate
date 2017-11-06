@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EveConstellationsService } from './eveconstellations.service';
 import { EveService } from './eve.service';
-import { NameModel } from './eve.class';
+import { NameModel } from './evenames.service';
 
 @Component({
   templateUrl: 'constellation.component.html'

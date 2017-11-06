@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { EveService } from './eve.service';
-import { BaseEveModel, NameModel } from './eve.class';
+import { EveAPIService } from './eveapi.service';
+import { BaseEveModel } from './eve.class';
+import { EveNamesService, NameModel } from './evenames.service';
 
 export class System extends BaseEveModel {
   constellation_id: number;
@@ -23,7 +24,8 @@ export class EveSystemsService {
   private APISystemInfo = 'universe/systems/{SystemID}/';
   
   constructor(
-    private eve: EveService
+    private api: EveAPIService,
+    private names: EveNamesService
   ) {}
 
   get(systemID: number): Promise<System> {
@@ -31,14 +33,14 @@ export class EveSystemsService {
       if (this.systems.has(systemID))
         resolve(this.systems.get(systemID));
       else
-        this.eve.APIget(this.APISystemInfo.replace('{SystemID}', systemID.toString())).then(res => {
+        this.api.get(this.APISystemInfo.replace('{SystemID}', systemID.toString())).then(res => {
           var rawSystem = res.json();
           var names = [];
 
           rawSystem.stations && (names = names.concat(rawSystem.stations));
           names = names.concat(rawSystem.constellation_id);
 
-          this.eve.getItemNames(names).then(names => {
+          this.names.getNames(names).then(names => {
             rawSystem.constellation = names.find(name => {return name.id === rawSystem.constellation_id});
             rawSystem.stations && (rawSystem.stations = names.filter(name => {return rawSystem.stations.includes(name.id)}));
             var system = new System(rawSystem);
@@ -48,5 +50,4 @@ export class EveSystemsService {
         });
     });
   }
-
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EveService } from './eve.service';
+import { EveAPIService } from './eveapi.service';
 import { BaseEveModel } from './eve.class';
 
 export class Faction extends BaseEveModel {
@@ -21,7 +21,7 @@ export class EveFactionsService {
   
   private APIFactionsList = 'universe/factions/';
   
-  constructor(private eve: EveService) { }
+  constructor(private api: EveAPIService) { }
 
   get(factionID: number): Promise<Faction> {
     return new Promise(resolve => {
@@ -54,7 +54,7 @@ export class EveFactionsService {
 
   getFactions(): Promise<Map<number, Faction>> {
     return new Promise(resolve => {
-      this.eve.APIget(this.APIFactionsList).then(res => {
+      this.api.get(this.APIFactionsList).then(res => {
         var factions: any[] = res.json();
         factions.forEach(item => {
           var faction = new Faction(item);

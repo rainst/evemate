@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BaseEveModel } from './eve.class';
-import { EveService } from './eve.service';
+import { EveAPIService } from './eveapi.service';
 
 export class EveType extends BaseEveModel {
   type_id: number;
@@ -58,7 +58,7 @@ export class EveTypesService {
   private APIDogmaEffect = 'dogma/effects/{EffectID}/';
 
   constructor(
-    private eve: EveService
+    private api: EveAPIService
   ) {}
 
   get(typeID: number): Promise<EveType> {
@@ -66,7 +66,7 @@ export class EveTypesService {
       if (this.types.has(typeID))
         resolve(this.types.get(typeID));
       else
-        this.eve.APIget(this.APIUniverseTypes.replace('{TypeID}', typeID.toString())).then(res => {
+        this.api.get(this.APIUniverseTypes.replace('{TypeID}', typeID.toString())).then(res => {
           var type = new EveType(res.json());
           this.types.set(typeID, type);
           resolve(type);
@@ -79,7 +79,7 @@ export class EveTypesService {
       if (this.attributes.has(attributeID))
         resolve(this.attributes.get(attributeID));
       else
-        this.eve.APIget(this.APIDogmaAttribute.replace('{AttributeID}', attributeID.toString())).then(res => {
+        this.api.get(this.APIDogmaAttribute.replace('{AttributeID}', attributeID.toString())).then(res => {
           var attribute = new DogmaAttribute(res.json());
           this.attributes.set(attributeID, attribute);
           resolve(attribute);
@@ -92,7 +92,7 @@ export class EveTypesService {
       if (this.effects.has(effectID))
         resolve(this.effects.get(effectID));
       else
-        this.eve.APIget(this.APIDogmaEffect.replace('{EffectID}', effectID.toString())).then(res => {
+        this.api.get(this.APIDogmaEffect.replace('{EffectID}', effectID.toString())).then(res => {
           var effect = new DogmaEffect(res.json());
           this.effects.set(effectID, effect);
           resolve(effect);

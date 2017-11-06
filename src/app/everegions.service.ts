@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { EveService } from './eve.service';
-import { BaseEveModel, NameModel } from './eve.class';
+import { EveAPIService } from './eveapi.service';
+import { BaseEveModel } from './eve.class';
+import { EveNamesService, NameModel } from './evenames.service';
 
 export class Region extends BaseEveModel {
   name: string;
@@ -17,17 +18,19 @@ export class EveRegionsService {
   private APIRegionInfo = 'universe/regions/{RegionID}/';
   private APIRegions = 'universe/regions/';
   
-  constructor(private eve: EveService) {}
+  constructor(
+    private api: EveAPIService,
+    private names: EveNamesService
+  ) {}
 
   get(regionID: number): Promise<Region> {
     return new Promise(resolve => {
       if (this.regions.has(regionID))
         resolve(this.regions.get(regionID));
       else
-        this.eve.APIget(this.APIRegionInfo.replace('{RegionID}', regionID.toString())).then(res => {
+        this.api.get(this.APIRegionInfo.replace('{RegionID}', regionID.toString())).then(res => {
           var rawRegion = res.json();
-
-          this.eve.getItemNames(rawRegion.constellations).then(constellations => {
+          this.names.getNames(rawRegion.constellations).then(constellations => {
             rawRegion.constellations = constellations;
             var region = new Region(rawRegion);
             this.regions.set(regionID, region);
@@ -42,9 +45,9 @@ export class EveRegionsService {
       if (this.regionList)
         resolve(this.regionList);
       else
-        this.eve.APIget(this.APIRegions).then(res => {
+        this.api.get(this.APIRegions).then(res => {
           var regionList: number[] = res.json();
-          this.eve.getItemNames(regionList).then(names => {
+          this.names.getNames(regionList).then(names => {
             this.regionList = names;
             resolve(names);
           });

@@ -1,7 +1,7 @@
-<div *ngIf="regionID">
-  <h5>{{name}}</h5>
-  <p>ID: {{regionID}}</p>
-  <p>{{description}}</p>
+<div *ngIf="region">
+  <h5>{{region.name}}</h5>
+  <p>ID: {{region.region_id}}</p>
+  <p>{{region.description}}</p>
   <div *ngIf="constellations">
     <h5>Constellations ({{constellations.length}})</h5>
     <dl *ngFor="let constellation of constellations">
@@ -9,6 +9,7 @@
     </dl>
   </div>
 </div>
+
 <ul *ngIf="regionList">
   <li *ngFor="let region of regionList"><a routerLink="/region/{{region.id}}">{{region.name}}</a></li>
 </ul>
