@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EveService } from './eve.service';
-import { BaseEveModel } from './eve.class';
+import { BaseEveModel, NameModel } from './eve.class';
 
 export class Corporation extends BaseEveModel {
   id: number;
@@ -23,13 +23,21 @@ export class Corporation extends BaseEveModel {
   }
 }
 
+export class CorporationIcon extends BaseEveModel {
+  px128x128?: string;
+  px256x256?: string;
+  px64x64?: string;
+}
+
 @Injectable()
 export class EveCorporationsService {
   private corporations: Map<number, Corporation> = new Map();
-  
+  private corporationsIcon: Map<number, CorporationIcon> = new Map();
+
   private APICorporationsNames = 'corporations/names/';
   private APICorporation = 'corporations/{corporation_id}/';
-  private APICorporationCorporations = 'corporations/{corporation_id}/corporations/';
+  private APICorporationMembers = 'corporations/{corporation_id}/members/';
+  private APICorporationIcon = 'corporations/{corporation_id}/icons/';
   
   constructor(private eve: EveService) { }
 
@@ -43,6 +51,19 @@ export class EveCorporationsService {
           corporation.id = corporationID;
           this.corporations.set(corporationID, corporation);
           resolve(corporation);
+        });
+    });
+  }
+
+  getIcon(corporationID: number): Promise<CorporationIcon> {
+    return new Promise(resolve => {
+      if (this.corporationsIcon.has(corporationID))
+        resolve(this.corporationsIcon.get(corporationID));
+      else
+        this.eve.APIget(this.APICorporationIcon.replace('{corporation_id}', corporationID.toString())).then(res => {
+          var icon = new CorporationIcon(res.json());
+          this.corporationsIcon.set(corporationID, icon);
+          resolve(icon);
         });
     });
   }

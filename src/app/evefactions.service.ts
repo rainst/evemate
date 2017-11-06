@@ -25,17 +25,43 @@ export class EveFactionsService {
 
   get(factionID: number): Promise<Faction> {
     return new Promise(resolve => {
-      if (this.factions.has(factionID))
-        resolve(this.factions.get(factionID));
+      function doResolve(factions: Map<number, Faction>): void {
+        resolve (factions.get(factionID));
+      }
+
+      if (this.factions.size)
+        doResolve(this.factions);
       else
-        this.eve.APIget(this.APIFactionsList).then(res => {
-          var factions: any[] = res.json();
-          factions.forEach(item => {
-            var faction = new Faction(item);
-            this.factions.set(faction.faction_id, faction);
-          });
-          resolve(this.factions.get(factionID));
+        this.getFactions().then(doResolve);
+    });
+  }
+
+  getByName(factionName: string): Promise<Faction> {
+    return new Promise(resolve => {
+      var resolver = function (factions: Map<number, Faction>) {
+        factions.forEach(faction => {
+          if (faction.name === factionName)
+            return resolve(faction);
         });
+      }
+
+      if (this.factions.size)
+        resolver(this.factions);
+      else
+        this.getFactions().then(resolver);
+    });
+  }
+
+  getFactions(): Promise<Map<number, Faction>> {
+    return new Promise(resolve => {
+      this.eve.APIget(this.APIFactionsList).then(res => {
+        var factions: any[] = res.json();
+        factions.forEach(item => {
+          var faction = new Faction(item);
+          this.factions.set(faction.faction_id, faction);
+        });
+        resolve(this.factions);
+      });
     });
   }
 }
