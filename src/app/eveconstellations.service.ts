@@ -6,7 +6,7 @@ import { EveNamesService, NameModel } from './evenames.service';
 
 export class Constellation extends BaseEveModel {
   name: string;
-  systems: NameModel[];
+  systems: number[];
   constellation_id: number;
   region_id: number;
   region: NameModel;
@@ -30,15 +30,9 @@ export class EveConstellationsService {
         resolve(this.constellations.get(constellationID));
       else
         this.api.get(this.APIRegionInfo.replace('{ConstellationID}', constellationID.toString())).then(res => {
-          var rawConstellation = res.json();
-
-          this.names.getNames(Array.prototype.concat(rawConstellation.region_id, rawConstellation.systems)).then(names => {
-            rawConstellation.region = names.find(name => {return name.id === rawConstellation.region_id});
-            rawConstellation.systems = names.filter(name => {return rawConstellation.systems.includes(name.id)});
-            var constellation = new Constellation(rawConstellation);
-            this.constellations.set(constellationID, constellation);
-            resolve(constellation);
-          });
+          var constellation = new Constellation(res.json());
+          this.constellations.set(constellationID, constellation);
+          resolve(constellation);
         });
     });
   }

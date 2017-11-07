@@ -29,17 +29,12 @@ export class FactionComponent implements OnInit {
         console.log(faction);
         this.faction = faction;
 
-        this.corporations.get(faction.corporation_id).then(corporation => {
-          this.corporation = corporation;
-        });
+        this.corporations.get(faction.corporation_id).then(corporation => this.corporation = corporation);
 
-        this.corporations.get(faction.militia_corporation_id).then(militia => {
-          this.militia = militia;
-        });
+        if (faction.militia_corporation_id)
+          this.corporations.get(faction.militia_corporation_id).then(militia => this.militia = militia);
 
-        this.systems.get(faction.solar_system_id).then(system => {
-          this.system = system;
-        });
+        this.systems.get(faction.solar_system_id).then(system => this.system = system);
       });
     });
   }
