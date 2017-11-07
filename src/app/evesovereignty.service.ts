@@ -75,6 +75,23 @@ export class EveSovereigntyService {
     });
   }
 
+  getCampaignsInSystems(systemsID: number[]): Promise<Campaign[]> {
+    return new Promise(resolve => {
+      var promises: Promise<Campaign[]>[] = [];
+
+      systemsID.forEach(systemID => promises.push(this.getCampaignsInSystem(systemID)));
+
+      Promise.all(promises).then(campaigns => {
+        var results: Campaign[] = [];
+        campaigns.forEach(campaign => {
+          results = results.concat(campaign);
+        });
+
+        resolve(results);
+      });
+    });
+  }
+
   getSovereignty(systemID: number): Promise<Sovereignty> {
     return new Promise(resolve => {
       if (this.sovereignties.has(systemID))
@@ -89,6 +106,16 @@ export class EveSovereigntyService {
           });
           resolve(this.sovereignties.get(systemID));
         });
+    });
+  }
+  
+  getSovereignties(systemsID: number[]): Promise<Sovereignty[]> {
+    return new Promise(resolve => {
+      var promises: Promise<Sovereignty>[] = [];
+
+      systemsID.forEach(systemID => promises.push(this.getSovereignty(systemID)));
+
+      Promise.all(promises).then(sovereignties => resolve(sovereignties));
     });
   }
 

@@ -26,8 +26,8 @@ export class ConstellationComponent implements OnInit {
       this.constellations.get(this.constellationID).then(constellation => {
         console.log(constellation);
         this.name = constellation.name;
-        this.region = constellation.region;
-        this.systems = constellation.systems;
+        // this.region = constellation.region;
+        // this.systems = constellation.systems;
       });
     });
   }

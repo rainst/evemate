@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EveAPIService } from './eveapi.service';
 import { BaseEveModel } from './eve.class';
-import { EveNamesService, NameModel } from './evenames.service';
 
 
 export class Constellation extends BaseEveModel {
@@ -9,7 +8,6 @@ export class Constellation extends BaseEveModel {
   systems: number[];
   constellation_id: number;
   region_id: number;
-  region: NameModel;
   position: {x:number, y:number, z:number}
 }
 
@@ -20,8 +18,7 @@ export class EveConstellationsService {
   private APIRegionInfo = 'universe/constellations/{ConstellationID}/';
   
   constructor (
-    private api: EveAPIService,
-    private names: EveNamesService
+    private api: EveAPIService
   ) {}
 
   get(constellationID: number): Promise<Constellation> {

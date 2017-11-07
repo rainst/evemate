@@ -5,7 +5,6 @@ import { EveNamesService, NameModel } from './evenames.service';
 
 export class System extends BaseEveModel {
   constellation_id: number;
-  constellation: NameModel;
   name: string;
   planets: {planet_id:NameModel, moons?:NameModel[]}[];
   position: {x:number, y:number, z:number};
@@ -34,20 +33,31 @@ export class EveSystemsService {
         resolve(this.systems.get(systemID));
       else
         this.api.get(this.APISystemInfo.replace('{SystemID}', systemID.toString())).then(res => {
-          var rawSystem = res.json();
-          var names = [];
+          // var rawSystem = res.json();
+          // var names = [];
 
-          rawSystem.stations && (names = names.concat(rawSystem.stations));
-          names = names.concat(rawSystem.constellation_id);
+          // rawSystem.stations && (names = names.concat(rawSystem.stations));
+          // names = names.concat(rawSystem.constellation_id);
+          
+          var system = new System(res.json());
+          this.systems.set(systemID, system);
+          resolve(system);
 
-          this.names.getNames(names).then(names => {
-            rawSystem.constellation = names.find(name => {return name.id === rawSystem.constellation_id});
-            rawSystem.stations && (rawSystem.stations = names.filter(name => {return rawSystem.stations.includes(name.id)}));
-            var system = new System(rawSystem);
-            this.systems.set(systemID, system);
-            resolve(system);
-          });
+          // this.names.getNames(names).then(names => {
+          //   rawSystem.constellation = names.find(name => {return name.id === rawSystem.constellation_id});
+          //   rawSystem.stations && (rawSystem.stations = names.filter(name => {return rawSystem.stations.includes(name.id)}));
+          // });
         });
+    });
+  }
+
+  getList(systemsID: number[]): Promise<System[]> {
+    return new Promise(resolve => {
+      var promises: Promise<System>[] = [];
+      
+      systemsID.forEach(systemID => promises.push(this.get(systemID)));
+
+      Promise.all(promises).then(results => resolve(results));
     });
   }
 }

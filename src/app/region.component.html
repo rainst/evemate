@@ -2,35 +2,38 @@
   <h5>{{region.name}}</h5>
   <p>ID: {{region.region_id}}</p>
   <p>{{region.description}}</p>
-  <div *ngIf="constellationsl">
-    <h5>Constellations ({{constellations.length}})</h5>
-    <dl *ngFor="let constellation of constellations">
-      <dt><a routerLink="/constellation/{{constellation.id}}">{{constellation.name}}</a></dt>
-    </dl>
-  </div>
 </div>
 
-<table class="table table-hover table-sm" *ngIf="systemList.length">
+<table class="table table-hover table-sm" *ngIf="systemList.length > 0">
   <thead>
     <tr>
-      <th scope="col">System</th>
-      <th scope="col">Constellation</th>
+      <th scope="col">System ({{systemList.length}})</th>
+      <th scope="col">Security</th>
+      <th scope="col">Constellation ({{constellationList.length}})</th>
       <th scope="col">Sov</th>
-      <th scope="col">Status</th>
+      <th scope="col">Events ({{campaignsList.length}})</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let system of systemList">
-      <td><a routerLink="/system/{{system.system_id}}">{{system.name}}</a></td>
-      <td><a routerLink="/constellation/{{system.constellation_id}}">{{getConstellation(system.constellation_id).name}}</a></td>
-      <td *ngIf="getSovereignty(system.system_id).alliance_id">
-        <a routerLink="/alliance/{{getSovereignty(system.system_id).alliance_id}}">{{getAlliance(getSovereignty(system.system_id).alliance_id).alliance_name}}</a>
+    <tr *ngFor="let system of systemsDetails">
+      <td><a routerLink="/system/{{system.system.system_id}}">{{system.system.name}}</a></td>
+      <td>{{system.system.security_status.toFixed(2)}}</td>
+      <td><a routerLink="/constellation/{{system.constellation.constellation_id}}">{{system.constellation.name}}</a></td>
+      <td>
+        <a *ngIf="system.sovereignty.alliance_id" routerLink="/alliance/{{system.sovereignty.alliance_id}}">
+          {{system.alliance.alliance_name}}
+        </a>
+        <a *ngIf="system.sovereignty.faction_id" routerLink="/faction/{{system.sovereignty.faction_id}}">
+          {{system.faction.name}}
+        </a>
+        <span *ngIf="!(system.sovereignty.faction_id || system.sovereignty.alliance_id)">-</span>
       </td>
-      <td *ngIf="getSovereignty(system.system_id).faction_id">
-        <a routerLink="/faction/{{getSovereignty(system.system_id).faction_id}}">{{getFaction(getSovereignty(system.system_id).faction_id).name}}</a>
+      <td>
+        <span *ngIf="system.campaigns.length > 0">
+          <span *ngFor="let campaign of system.campaigns">{{campaign.event_type}} </span>
+        </span>
+        <span *ngIf="system.campaigns.length === 0">-</span>
       </td>
-      <td *ngIf="!(getSovereignty(system.system_id).faction_id || getSovereignty(system.system_id).alliance_id)">-</td>
-      <td><a routerLink="/system/"></a></td>
     </tr>
   </tbody>
 </table>

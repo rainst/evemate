@@ -4,7 +4,7 @@ import { EveRegionsService, Region } from './everegions.service';
 import { EveConstellationsService, Constellation } from './eveconstellations.service';
 import { EveSystemsService, System } from './evesystems.service';
 import { NameModel } from './evenames.service';
-import { EveSovereigntyService, Sovereignty } from './evesovereignty.service';
+import { EveSovereigntyService, Sovereignty, Campaign } from './evesovereignty.service';
 import { EveAlliancesService, Alliance } from "./evealliances.service";
 import { EveFactionsService, Faction } from "./evefactions.service";
 
@@ -15,11 +15,15 @@ import { EveFactionsService, Faction } from "./evefactions.service";
 export class RegionComponent implements OnInit {
   private region: Region;
   private regionList: NameModel[];
+
+  private systemsDetails: {system: System, constellation: Constellation, sovereignty: Sovereignty, campaigns: Campaign[], faction?: Faction, alliance?: Alliance}[] = [];
+
   private constellationList: Constellation[]= [];
   private systemList: System[] = [];
   private sovList: Sovereignty[] = [];
   private allianceList: Alliance[] = [];
   private factionList: Faction[] = [];
+  private campaignsList: Campaign[]= [];
 
   constructor(
     private route: ActivatedRoute,
@@ -33,34 +37,60 @@ export class RegionComponent implements OnInit {
 
   ngOnInit() { 
     this.route.params.subscribe(params => {
+
       var regionID = parseInt(params.id, 10);
       if (regionID)
         this.regions.get(regionID).then(region => {
           this.region = region;
 
+          var constPromises = [];
+
           this.region.constellations.forEach(constellationID => {
-            this.constellations.get(constellationID).then(constellation => {
-              this.constellationList.push(constellation);
+            constPromises.push(this.constellations.get(constellationID))
+          });
+          
+          Promise.all(constPromises).then(constellations => {
+            this.constellationList = constellations;
+            
+            var systemIDs = [];
+            constellations.forEach((constellation: Constellation) => {
+              systemIDs = systemIDs.concat(constellation.systems);
+            });
+            
+            Promise.all([
+              this.systems.getList(systemIDs),
+              this.sovereignty.getCampaignsInSystems(systemIDs),
+              this.sovereignty.getSovereignties(systemIDs)
+            ]).then(results => {
+              this.systemList = results[0];
+              this.campaignsList = results[1];
+              this.sovList = results[2];
 
-              constellation.systems.forEach(systemID => {
-                this.systems.get(systemID).then(system => {
-                  this.sovereignty.getSovereignty(system.system_id).then(sov => {
-                    this.sovList.push(sov);
+              var alliancesID: number[] = [];
+              this.sovList.forEach(sovereignty => sovereignty.alliance_id && alliancesID.push(sovereignty.alliance_id));
+              
+              var factionsID: number[] = [];
+              this.sovList.forEach(sovereignty => sovereignty.faction_id && factionsID.push(sovereignty.faction_id));
 
-                    if (sov.alliance_id)
-                      this.alliances.get(sov.alliance_id).then(alliance => {
-                        this.allianceList.push(alliance);
-                        this.systemList.push(system);
-                      });
-                    else if (sov.faction_id)
-                      this.factions.get(sov.faction_id).then(faction => {
-                        this.factionList.push(faction);
-                        this.systemList.push(system);
-                      });
-                    else
-                      this.systemList.push(system);
-                  });
+              Promise.all([
+                this.alliances.getList(alliancesID.filter((id, pos) => {return alliancesID.indexOf(id) === pos})),
+                this.factions.getList(factionsID.filter((id, pos) => {return factionsID.indexOf(id) === pos}))
+              ]).then(results => {
+                this.allianceList = results[0];
+                this.factionList = results[1];
+
+                this.systemList.forEach(system => {
+                  var systemDetail = {
+                    system: system,
+                    constellation: this.constellationList.find(cons => {return cons.constellation_id === system.constellation_id}),
+                    sovereignty: this.sovList.find(sov => {return sov.system_id === system.system_id}),
+                    campaigns: this.campaignsList.filter(camp => {return camp.solar_system_id === system.system_id}),
+                    faction: this.factionList.find(faction => {return faction.faction_id === this.sovList.find(sov => {return sov.system_id === system.system_id}).faction_id}),
+                    alliance: this.allianceList.find(alliance => {return alliance.id === this.sovList.find(sov => {return sov.system_id === system.system_id}).alliance_id})
+                  }
+                  this.systemsDetails.push(systemDetail);
                 });
+                console.log(this.systemsDetails)
               });
             });
           });
@@ -86,5 +116,9 @@ export class RegionComponent implements OnInit {
 
   getFaction(factionID:number): Faction {
     return this.factionList.find(faction => {return faction.faction_id === factionID});
+  }
+  
+  getCampaigns(systemID: number): Campaign[] {
+    return this.campaignsList.filter(campaign => {return campaign.solar_system_id === systemID});
   }
 }

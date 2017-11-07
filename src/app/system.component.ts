@@ -37,7 +37,7 @@ export class SystemComponent implements OnInit {
       this.sysyems.get(this.systemID).then(system => {
         console.log(system);
         this.name = system.name;
-        this.constellation = system.constellation;
+        // this.constellation = system.constellation;
         this.stations = system.stations;
         
         // this.planets = system.planets;

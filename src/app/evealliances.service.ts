@@ -53,6 +53,15 @@ export class EveAlliancesService {
     });
   }
 
+  getList(alliancesID: number[]): Promise<Alliance[]> {
+    return new Promise(resolve => {
+      var promises: Promise<Alliance>[] = [];
+ 
+        alliancesID.forEach(allianceID => promises.push(this.get(allianceID)));
+        Promise.all(promises).then(alliances => resolve(alliances));
+    });
+  }
+
   getIcon(allianceID: number): Promise<AllianceIcon> {
     return new Promise(resolve => {
       if (this.alliancesIcon.has(allianceID))

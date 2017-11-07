@@ -36,6 +36,16 @@ export class EveFactionsService {
     });
   }
 
+  getList(factionsID: number[]): Promise<Faction[]> {
+    return new Promise(resolve => {
+      var promises: Promise<Faction>[] = [];
+      
+      factionsID.forEach(factionID => promises.push(this.get(factionID)));
+
+      Promise.all(promises).then(factions => resolve(factions));
+    });
+  }
+
   getByName(factionName: string): Promise<Faction> {
     return new Promise(resolve => {
       var resolver = function (factions: Map<number, Faction>) {
