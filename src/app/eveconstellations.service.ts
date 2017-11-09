@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { EveAPIService } from './eveapi.service';
 import { BaseEveModel } from './eve.class';
 
-
 export class Constellation extends BaseEveModel {
   name: string;
   systems: number[];
@@ -31,6 +30,15 @@ export class EveConstellationsService {
           this.constellations.set(constellationID, constellation);
           resolve(constellation);
         });
+    });
+  }
+
+  getList(constellationsID: number[]): Promise<Constellation[]> {
+    return new Promise(resolve => {
+      var promises: Promise<Constellation>[] = [];
+
+      constellationsID.forEach(constellationID => promises.push(this.get(constellationID)));
+      Promise.all(promises).then(constellations => resolve(constellations));
     });
   }
 }

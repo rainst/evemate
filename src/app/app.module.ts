@@ -41,6 +41,7 @@ import { CorporationComponent } from './corporation.component';
 import { AllianceComponent } from './alliance.component';
 import { StationComponent } from './station.component';
 import { FactionComponent } from './faction.component';
+import { SystemsTableComponent } from './systemtable.component';
 
 const appRoutes: Routes = [
   { path: '', component: LoginComponent },
@@ -83,7 +84,8 @@ const appRoutes: Routes = [
     CorporationComponent,
     AllianceComponent,
     FactionComponent,
-    StationComponent
+    StationComponent,
+    SystemsTableComponent
   ],
   imports: [
     BrowserModule,

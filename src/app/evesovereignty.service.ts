@@ -54,24 +54,18 @@ export class EveSovereigntyService {
   private APISovCampaigns = 'sovereignty/campaigns/'; //5 sec cache
   private APISovereignty = 'sovereignty/map/';
   private APISovStructures = 'sovereignty/structures/'; //120 sec cache
+
+  private sovereigntyPromise: Promise<any>;
+  private campaignPromise: Promise<any>;
   
   constructor(private api: EveAPIService) {}
 
   getCampaignsInSystem(systemID: number): Promise<Campaign[]> {
     return new Promise(resolve => {
-      if (this.campaigns && this.campaigns.length)
-        resolve(this.campaigns.filter(campaign => {return campaign.solar_system_id === systemID}));
+      if (!this.campaigns || !this.campaigns.length)
+        this.loadCampaigns(systemID).then(campaigns => resolve(campaigns));
       else
-        this.api.get(this.APISovCampaigns).then(res => {
-          this.campaigns = [];
-          var campaigns:any[] = res.json();
-
-          campaigns.forEach(item => {
-            var campaign = new Campaign(item);
-            this.campaigns.push(campaign);
-          });
-          resolve(this.campaigns.filter(campaign => {return campaign.solar_system_id === systemID}));
-        });
+        resolve(this.campaigns.filter(campaign => {return campaign.solar_system_id === systemID}));
     });
   }
 
@@ -92,20 +86,47 @@ export class EveSovereigntyService {
     });
   }
 
+  loadCampaigns(systemID?: number): Promise<Campaign[] | null> {
+    return new Promise(resolve => {
+      if (! this.campaignPromise)
+        this.campaignPromise = this.api.get(this.APISovCampaigns);
+
+      this.campaignPromise.then(res => {
+        this.campaigns = [];
+        var campaigns:any[] = res.json();
+
+        campaigns.forEach(item => {
+          var campaign = new Campaign(item);
+          this.campaigns.push(campaign);
+        });
+        resolve(this.campaigns.filter(campaign => {return campaign.solar_system_id === systemID}));
+      });
+    });
+  }
+
   getSovereignty(systemID: number): Promise<Sovereignty> {
     return new Promise(resolve => {
-      if (this.sovereignties.has(systemID))
-        resolve(this.sovereignties.get(systemID));
+      if (this.sovereignties.size === 0)
+        this.loadSovereignties(systemID).then(sovereignty => resolve(sovereignty))
       else
-        this.api.get(this.APISovereignty).then(res => {
-          this.sovereignties.clear();
-          var sovereignties:any[] = res.json();
-          sovereignties.forEach(item => {
-            var sovereignty = new Sovereignty(item);
-            this.sovereignties.set(sovereignty.system_id, sovereignty);
-          });
-          resolve(this.sovereignties.get(systemID));
+        resolve(this.sovereignties.get(systemID));
+    });
+  }
+  
+  loadSovereignties(systemID?: number): Promise<Sovereignty | null> {
+    return new Promise(resolve => {
+      if (! this.sovereigntyPromise)
+        this.sovereigntyPromise = this.api.get(this.APISovereignty);
+
+      this.sovereigntyPromise.then(res => {
+        this.sovereignties.clear();
+        var sovereignties:any[] = res.json();
+        sovereignties.forEach(item => {
+          var sovereignty = new Sovereignty(item);
+          this.sovereignties.set(sovereignty.system_id, sovereignty);
         });
+        resolve(this.sovereignties.get(systemID));
+      });
     });
   }
   
