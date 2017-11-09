@@ -1,6 +1,16 @@
-<h5>{{name}}</h5>
-<p>ID: {{systemID}}</p>
-<p *ngIf="constellation">Constellation: <a routerLink="/constellation/{{constellation.id}}">{{constellation.name}}</a></p>
+<div *ngIf="system">
+  <h1>{{system.name}}</h1>
+  <p *ngIf="region && constellation">Location: <a routerLink="/region/{{region.region_id}}">{{region.name}}</a> / <a routerLink="/constellation/{{constellation.constellation_id}}">{{constellation.name}}</a></p>
+  <p>
+    Stargates: {{system.stargates.length}}<br>
+    <span *ngIf="systemJumps">Jumps in the last hour: {{systemJumps.ship_jumps}}<br></span>
+    <span *ngIf="systemKills">
+      Ships destroyed in the last hour: {{systemKills.ship_kills}}<br>
+      Pods killed in the last hour: {{systemKills.pod_kills}}<br>
+      NPC killed in the last hour: {{systemKills.npc_kills}}<br>
+    </span>
+  </p>
+</div>
 
 <div *ngIf="faction || alliance || corporation">
   <h5>Sovereignty</h5>

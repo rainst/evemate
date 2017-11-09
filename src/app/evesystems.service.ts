@@ -17,14 +17,14 @@ export class System extends BaseEveModel {
 
 export class SystemKills extends BaseEveModel {
   system_id: number;
-  ship_kills: number;
-  npc_kills: number;
-  pod_kills: number;
+  ship_kills: number = 0;
+  npc_kills: number = 0;
+  pod_kills: number = 0;
 }
 
 export class SystemJumps extends BaseEveModel {
   system_id: number;
-  ship_jumps: number;
+  ship_jumps: number = 0;
 }
 
 @Injectable()
@@ -71,9 +71,18 @@ export class EveSystemsService {
   getKills(systemID: number): Promise<SystemKills> {
     return new Promise(resolve => {
       if (!this.systemKills.size)
-        this.loadKills(systemID).then(kill => resolve(kill));
-      else
-        resolve(this.systemKills.get(systemID));
+        this.loadKills(systemID).then(kill => {
+          if (kill)
+            resolve(kill)
+          else
+            resolve(new SystemKills({system_id: systemID}));
+        });
+      else {
+        if (this.systemKills.has(systemID))
+          resolve(this.systemKills.get(systemID));
+        else
+          resolve(new SystemKills({system_id: systemID}));
+      }
     });
   }
 
@@ -98,9 +107,18 @@ export class EveSystemsService {
   getJumps(systemID: number): Promise<SystemJumps> {
     return new Promise(resolve => {
       if (!this.systemJumps.size)
-        this.loadJumps(systemID).then(jump => resolve(jump));
-      else
-        resolve(this.systemJumps.get(systemID));
+        this.loadJumps(systemID).then(jump => {
+          if (jump)
+            resolve(jump);
+          else
+            resolve(new SystemJumps({system_id: systemID}));
+        });
+      else {
+        if (this.systemJumps.has(systemID))
+          resolve(this.systemJumps.get(systemID));
+        else
+          resolve(new SystemJumps({system_id: systemID}));
+      }
     });
   }
 
