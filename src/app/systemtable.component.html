@@ -1,7 +1,7 @@
 <table class="table table-hover table-sm" *ngIf="systemsDetails.length > 0">
   <thead>
     <tr>
-      <th scope="col">System ({{systemList.length}})</th>
+      <th scope="col">System ({{systemsDetails.length}})</th>
       <th scope="col">Security</th>
       <th scope="col">Constellation ({{constellationList.length}})</th>
       <th scope="col">Sov</th>
@@ -13,7 +13,7 @@
       <td><a routerLink="/system/{{system.system.system_id}}">{{system.system.name}}</a></td>
       <td>{{system.system.security_status.toFixed(2)}}</td>
       <td>
-        <!-- <a routerLink="/constellation/{{system.constellation.constellation_id}}">{{system.constellation.name}}</a> -->
+        <a routerLink="/constellation/{{system.constellation.constellation_id}}">{{system.constellation.name}}</a>
       </td>
       <td>
         <a *ngIf="system.sovereignty.alliance_id" routerLink="/alliance/{{system.sovereignty.alliance_id}}">

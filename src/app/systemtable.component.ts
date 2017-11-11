@@ -4,14 +4,15 @@ import { EveAlliancesService, Alliance } from "./evealliances.service";
 import { EveFactionsService, Faction } from "./evefactions.service";
 import { EveSystemsService, System } from './evesystems.service';
 import { EveConstellationsService, Constellation } from './eveconstellations.service';
+import { BaseEveModel } from './eve.class';
 
-class SystemDetails {
+class SystemDetails extends BaseEveModel {
   system: System;
   constellation: Constellation;
   sovereignty: Sovereignty;
   campaigns: Campaign[];
   faction?: Faction;
-  alliance?: Alliance
+  alliance?: Alliance;
 }
 
 @Component({
@@ -23,13 +24,9 @@ export class SystemsTableComponent implements OnInit {
   @Input() private systemsID?: number[] = [];
   @Input() private constellationsID?: number[] = [];
 
-  private constellationList: Constellation[]= [];
-  private systemList: System[] = [];
-  private sovList: Sovereignty[] = [];
-  private allianceList: Alliance[] = [];
-  private factionList: Faction[] = [];
-  private campaignsList: Campaign[]= [];
   private systemsDetails: SystemDetails[] = [];
+  private constellationList: Constellation[]= [];
+  private campaignsList: Campaign[]= [];
   
   constructor(
     private constellations: EveConstellationsService,
@@ -38,118 +35,62 @@ export class SystemsTableComponent implements OnInit {
     private factions: EveFactionsService,
     private alliances: EveAlliancesService
   ) { }
+  
+  
+  ngOnInit() {
+    this.constellations.getList(this.constellationsID).then(constellations => {
+      this.constellationList = constellations;
+      var systemsID: number[] = [];
+      constellations.forEach(constellation => systemsID = systemsID.concat(constellation.systems));
 
-  ngOnInit() { 
-    this.getSystemsDetails().then(results => {
-      this.resolveSovNames().then(results => {
-        this.systemList.forEach(system => {
-          var systemDetail = {
-            system: system,
-            constellation: this.constellationList.find(cons => {return cons.constellation_id === system.constellation_id}),
-            sovereignty: this.sovList.find(sov => {return sov.system_id === system.system_id}),
-            campaigns: this.campaignsList.filter(camp => {return camp.solar_system_id === system.system_id}),
-            faction: this.factionList.find(faction => {return faction.faction_id === this.sovList.find(sov => {return sov.system_id === system.system_id}).faction_id}),
-            alliance: this.allianceList.find(alliance => {return alliance.id === this.sovList.find(sov => {return sov.system_id === system.system_id}).alliance_id})
-          }
-          this.systemsDetails.push(systemDetail);
-          // console.log(systemDetail);
-        });
+      this.systemsID.concat(systemsID).forEach(systemID => {
+        this.getSystemDetails(systemID).then(system => this.systemsDetails.push(system));
       });
     });
-    
-    // var constPromises = [];
-
-    
-    // this.region.constellations.forEach(constellationID => {
-    //   constPromises.push(this.constellations.get(constellationID))
-    // });
-    
-    // Promise.all(constPromises).then(constellations => {
-    //   this.constellationList = constellations;
-      
-    //   var systemIDs = [];
-    //   constellations.forEach((constellation: Constellation) => {
-    //     systemIDs = systemIDs.concat(constellation.systems);
-    //   });
-      
-    //   Promise.all([
-    //     this.systems.getList(systemIDs),
-    //     this.sovereignty.getCampaignsInSystems(systemIDs),
-    //     this.sovereignty.getSovereignties(systemIDs)
-    //   ]).then(results => {
-    //     this.systemList = results[0];
-    //     this.campaignsList = results[1];
-    //     this.sovList = results[2];
-
-    //     var alliancesID: number[] = [];
-    //     this.sovList.forEach(sovereignty => sovereignty.alliance_id && alliancesID.push(sovereignty.alliance_id));
-        
-    //     var factionsID: number[] = [];
-    //     this.sovList.forEach(sovereignty => sovereignty.faction_id && factionsID.push(sovereignty.faction_id));
-
-    //     Promise.all([
-    //       this.alliances.getList(alliancesID.filter((id, pos) => {return alliancesID.indexOf(id) === pos})),
-    //       this.factions.getList(factionsID.filter((id, pos) => {return factionsID.indexOf(id) === pos}))
-    //     ]).then(results => {
-    //       this.allianceList = results[0];
-    //       this.factionList = results[1];
-
-    //       this.systemList.forEach(system => {
-    //         var systemDetail = {
-    //           system: system,
-    //           constellation: this.constellationList.find(cons => {return cons.constellation_id === system.constellation_id}),
-    //           sovereignty: this.sovList.find(sov => {return sov.system_id === system.system_id}),
-    //           campaigns: this.campaignsList.filter(camp => {return camp.solar_system_id === system.system_id}),
-    //           faction: this.factionList.find(faction => {return faction.faction_id === this.sovList.find(sov => {return sov.system_id === system.system_id}).faction_id}),
-    //           alliance: this.allianceList.find(alliance => {return alliance.id === this.sovList.find(sov => {return sov.system_id === system.system_id}).alliance_id})
-    //         }
-    //         this.systemsDetails.push(systemDetail);
-    //       });
-    //     });
-    //   });
-    // });
   }
 
-  getSystemsDetails(): Promise<[System[], Constellation[], Campaign[], Sovereignty[]]> {
+  getSystemDetails(systemID: number): Promise<SystemDetails> {
     return new Promise(resolve => {
-      this.constellations.getList(this.constellationsID).then(constellations => {
-        var constSystems: number[] = [];
+      Promise.all([
+        this.systems.get(systemID),
+        this.sovereignty.getCampaignsInSystem(systemID),
+        this.sovereignty.getSovereignty(systemID)
+      ]).then(results => {
+        var system: System = results[0];
+        var campaigns: Campaign[] = results[1];
+        this.campaignsList = this.campaignsList.concat(campaigns);
+        var sovereignty: Sovereignty = results[2];
+        var sovPromise: Promise<any>;
 
-        constellations.forEach(constellation => constSystems = constSystems.concat(constellation.systems));
+        if (sovereignty.alliance_id)
+          sovPromise = this.alliances.get(sovereignty.alliance_id);
+        else if (sovereignty.faction_id)
+          sovPromise = this.factions.get(sovereignty.faction_id);
 
         Promise.all([
-          this.systems.getList(this.systemsID.concat(constSystems)),
-          this.constellations.getList([]), //(this.systemsID.concat(constSystems)),
-          this.sovereignty.getCampaignsInSystems(this.systemsID.concat(constSystems)),
-          this.sovereignty.getSovereignties(this.systemsID.concat(constSystems))
+          this.constellations.get(system.constellation_id),
+          sovPromise
         ]).then(results => {
-          this.systemList = results[0];
-          this.constellationList = results[1]
-          this.campaignsList = results[2];
-          this.sovList = results[3];
+          var constellation: Constellation = results[0];
+          var faction: Faction;
+          var alliance: Alliance;
 
-          resolve(results);
+          if (sovereignty.alliance_id)
+            alliance = results[1];
+          else if (sovereignty.faction_id)
+            faction = results[1];
+
+          var systemDetails = new SystemDetails({
+            system: system,
+            constellation: constellation,
+            sovereignty: sovereignty,
+            campaigns: campaigns,
+            faction: faction,
+            alliance: alliance
+          });
+
+          resolve(systemDetails);
         });
-      });
-    });
-  }
-
-  resolveSovNames(): Promise<[Alliance[], Faction[]]> {
-    return new Promise(resolve => {
-      var alliancesID: number[] = [];
-      this.sovList.forEach(sovereignty => sovereignty.alliance_id && alliancesID.push(sovereignty.alliance_id));
-      
-      var factionsID: number[] = [];
-      this.sovList.forEach(sovereignty => sovereignty.faction_id && factionsID.push(sovereignty.faction_id));
-
-      Promise.all([
-        this.alliances.getList(alliancesID.filter((id, pos) => {return alliancesID.indexOf(id) === pos})),
-        this.factions.getList(factionsID.filter((id, pos) => {return factionsID.indexOf(id) === pos}))
-      ]).then(results => {
-        this.allianceList = results[0];
-        this.factionList = results[1];
-
-        resolve(results);
       });
     });
   }
