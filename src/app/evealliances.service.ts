@@ -24,7 +24,7 @@ export class AllianceIcon extends BaseEveModel {
 
 @Injectable()
 export class EveAlliancesService {
-  private alliances: Map<number, Alliance> = new Map();
+  private alliances: Map<number, Promise<Alliance>> = new Map();
   private alliancesIcon: Map<number, AllianceIcon> = new Map();
   private corporationLists: Map<number, NameModel[]> = new Map();
   
@@ -40,17 +40,13 @@ export class EveAlliancesService {
   ) { }
 
   get(allianceID: number): Promise<Alliance> {
-    return new Promise(resolve => {
-      if (this.alliances.has(allianceID))
-        resolve(this.alliances.get(allianceID));
-      else
-        this.api.get(this.APIAlliance.replace('{alliance_id}', allianceID.toString())).then(res => {
-          var alliance = new Alliance(res.json());
-          alliance.id = allianceID;
-          this.alliances.set(allianceID, alliance);
-          resolve(alliance);
-        });
-    });
+    if (! this.alliances.has(allianceID))  
+      this.alliances.set(allianceID, new Promise(resolve => {
+        this.api.get(this.APIAlliance.replace('{alliance_id}', allianceID.toString()))
+          .then(res => resolve(new Alliance(res.json())));
+      }));
+
+    return (this.alliances.get(allianceID));
   }
 
   getList(alliancesID: number[]): Promise<Alliance[]> {
