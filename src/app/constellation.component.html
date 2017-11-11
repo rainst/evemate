@@ -1,9 +1,5 @@
-<h5>{{name}}</h5>
-<p>ID: {{constellationID}}</p>
-<p *ngIf="region">Region: <a routerLink="/region/{{region.id}}">{{region.name}}</a></p>
-<div *ngIf="systems">
-  <h5>Systems ({{systems.length}})</h5>
-  <dl *ngFor="let system of systems">
-    <dt><a routerLink="/system/{{system.id}}">{{system.name}}</a></dt>
-  </dl>
+<div *ngIf="constellation">
+  <h1>{{constellation.name}}</h1>
+  <p *ngIf="region">Region: <a routerLink="/region/{{region.region_id}}">{{region.name}}</a></p>
+  <system-table [systemsID]="constellation.systems"></system-table>
 </div>

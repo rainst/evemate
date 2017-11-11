@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { EveConstellationsService } from './eveconstellations.service';
-import { EveService } from './eve.service';
-import { NameModel } from './evenames.service';
+import { EveConstellationsService, Constellation } from './eveconstellations.service';
+import { EveRegionsService, Region } from './everegions.service';
+
 
 @Component({
   templateUrl: 'constellation.component.html'
@@ -10,24 +10,21 @@ import { NameModel } from './evenames.service';
 
 export class ConstellationComponent implements OnInit {
   private constellationID: number;
-  private name: string;
-  private systems: NameModel[];
-  private region: NameModel;
+  private constellation: Constellation;
+  private region: Region;
   
   constructor(
     private route: ActivatedRoute,
     private constellations: EveConstellationsService,
-    private eve: EveService
+    private regions: EveRegionsService 
   ) { }
 
   ngOnInit() { 
     this.route.params.subscribe(params => {
       this.constellationID = parseInt(params.id, 10);
       this.constellations.get(this.constellationID).then(constellation => {
-        console.log(constellation);
-        this.name = constellation.name;
-        // this.region = constellation.region;
-        // this.systems = constellation.systems;
+        this.constellation = constellation;
+        this.regions.get(constellation.region_id).then(region => this.region = region);
       });
     });
   }
