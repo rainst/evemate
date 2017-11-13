@@ -39,7 +39,6 @@ export class SystemsTableComponent implements OnInit {
   
   ngOnInit() {
     this.constellations.getList(this.constellationsID).then(constellations => {
-      this.constellationList = constellations;
       var systemsID: number[] = [];
       constellations.forEach(constellation => systemsID = systemsID.concat(constellation.systems));
 
@@ -74,6 +73,8 @@ export class SystemsTableComponent implements OnInit {
           var constellation: Constellation = results[0];
           var faction: Faction;
           var alliance: Alliance;
+          if (! this.constellationList.some(con => {return con.constellation_id === constellation.constellation_id}))
+            this.constellationList.push(constellation);
 
           if (sovereignty.alliance_id)
             alliance = results[1];
