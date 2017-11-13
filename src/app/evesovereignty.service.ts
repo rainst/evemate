@@ -140,6 +140,24 @@ export class EveSovereigntyService {
     });
   }
 
+  getAllianceSovereignties(allianceID: number): Promise<Sovereignty[]> {
+    return new Promise(resolve => {
+      var resolver = () => {
+        var results: Sovereignty[] = [];
+        this.sovereignties.forEach(sovereignty => {
+          if (sovereignty.alliance_id === allianceID)
+            results.push(sovereignty);
+        });
+        resolve(results);
+      }
+
+      if (this.sovereignties.size === 0)
+        this.loadSovereignties().then(resolver);
+      else
+        resolver();
+    });
+  }
+
   getStructureTimer(structureID: number): Promise<StructureTimer> {
     return new Promise(resolve => {
       if (this.structureTimers.has(structureID))

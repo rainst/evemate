@@ -3,6 +3,18 @@
   <p *ngIf="executor">Executor corp: <a routerLink="/corporation/{{executor.id}}">{{executor.corporation_name}}</a></p>
   <p>Founded: {{alliance.date_founded}}</p>
 </div>
-<div *ngIf="corporations">
-  <p *ngFor="let corp of corporations"><a routerLink="/corporation/{{corp.id}}">{{corp.name}}</a></p>
-</div>
+<system-table *ngIf="systemSovIDs.length > 0" [systemsID]="systemSovIDs"></system-table>
+<table *ngIf="corporationsList.length > 0" class="table table-hover table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Corporations ({{corporationsList.length}})</th>
+      <th scope="col">Members (Total: {{memberCount}})</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let corporation of corporationsList">
+      <td><a routerLink="/corporation/{{corporation.id}}">{{corporation.corporation_name}}</a></td>
+      <td>{{corporation.member_count}}</td>
+    </tr>
+  </tbody>
+</table>

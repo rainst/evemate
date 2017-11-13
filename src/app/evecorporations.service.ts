@@ -56,6 +56,16 @@ export class EveCorporationsService {
     });
   }
 
+  getList(corporationsID: number[]): Promise<Corporation[]> {
+    return new Promise(resolve => {
+      var promises: Promise<Corporation>[] = [];
+
+      corporationsID.forEach(corporationID => promises.push(this.get(corporationID)));
+
+      Promise.all(promises).then(resolve);
+    });
+  }
+
   getIcon(corporationID: number): Promise<CorporationIcon> {
     return new Promise(resolve => {
       if (this.corporationsIcon.has(corporationID))

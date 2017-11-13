@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { EveAPIService } from './eveapi.service';
 import { BaseEveModel } from './eve.class';
-import { EveNamesService, NameModel } from './evenames.service';
 
 export class Alliance extends BaseEveModel {
-  id: number;
+  alliance_id: number; //manually created since there's no reference to the id
   alliance_name: string;
   date_founded: Date;
   executor_corp?: number; //the executor corporation ID, if this alliance is not closed
@@ -26,7 +25,7 @@ export class AllianceIcon extends BaseEveModel {
 export class EveAlliancesService {
   private alliances: Map<number, Promise<Alliance>> = new Map();
   private alliancesIcon: Map<number, AllianceIcon> = new Map();
-  private corporationLists: Map<number, NameModel[]> = new Map();
+  private corporationLists: Map<number, number[]> = new Map();
   
   private APIAlliancesList = 'alliances/';
   private APIAlliancesNames = 'alliances/names/';
@@ -35,15 +34,18 @@ export class EveAlliancesService {
   private APIAllianceIcon = 'alliances/{alliance_id}/icons/';
 
   constructor(
-    private api: EveAPIService,
-    private names: EveNamesService
+    private api: EveAPIService
   ) { }
 
   get(allianceID: number): Promise<Alliance> {
     if (! this.alliances.has(allianceID))  
       this.alliances.set(allianceID, new Promise(resolve => {
         this.api.get(this.APIAlliance.replace('{alliance_id}', allianceID.toString()))
-          .then(res => resolve(new Alliance(res.json())));
+          .then(res => {
+            var alliance = res.json();
+            alliance.alliance_id = allianceID;
+            resolve(new Alliance(alliance));
+          });
       }));
 
     return (this.alliances.get(allianceID));
@@ -71,16 +73,15 @@ export class EveAlliancesService {
     });
   }
 
-  getCorporationsList(allianceID: number): Promise<NameModel[]> {
+  getCorporations(allianceID: number): Promise<number[]> {
     return new Promise(resolve => {
       if (this.corporationLists.has(allianceID))
         resolve(this.corporationLists.get(allianceID));
       else
         this.api.get(this.APIAllianceCorporations.replace('{alliance_id}', allianceID.toString())).then(res => {
-          this.names.getNames(res.json()).then(list => {
-            this.corporationLists.set(allianceID, list);
-            resolve(list);
-          });
+          var list = res.json()
+          this.corporationLists.set(allianceID, list);
+          resolve(list);
         });
     });
   }
