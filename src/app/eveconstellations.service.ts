@@ -13,7 +13,7 @@ export class Constellation extends BaseEveModel {
 @Injectable()
 
 export class EveConstellationsService {
-  private constellations: Map<number, Constellation> = new Map();
+  private constellations: Map<number, Promise<Constellation>> = new Map();
   private APIRegionInfo = 'universe/constellations/{ConstellationID}/';
   
   constructor (
@@ -21,16 +21,15 @@ export class EveConstellationsService {
   ) {}
 
   get(constellationID: number): Promise<Constellation> {
-    return new Promise(resolve => {
-      if (this.constellations.has(constellationID))
-        resolve(this.constellations.get(constellationID));
-      else
+    if (!this.constellations.has(constellationID))
+      this.constellations.set(constellationID, new Promise(resolve => {
         this.api.get(this.APIRegionInfo.replace('{ConstellationID}', constellationID.toString())).then(res => {
           var constellation = new Constellation(res.json());
-          this.constellations.set(constellationID, constellation);
           resolve(constellation);
         });
-    });
+      }));
+
+    return this.constellations.get(constellationID);
   }
 
   getList(constellationsID: number[]): Promise<Constellation[]> {
