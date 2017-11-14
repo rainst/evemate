@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { EveSovereigntyService, Sovereignty, Campaign } from './evesovereignty.service';
 import { EveAlliancesService, Alliance } from "./evealliances.service";
 import { EveFactionsService, Faction } from "./evefactions.service";
-import { EveSystemsService, System } from './evesystems.service';
+import { EveSystemsService, System, SystemJumps, SystemKills } from './evesystems.service';
 import { EveConstellationsService, Constellation } from './eveconstellations.service';
 import { BaseEveModel } from './eve.class';
 
@@ -13,6 +13,8 @@ class SystemDetails extends BaseEveModel {
   campaigns: Campaign[];
   faction?: Faction;
   alliance?: Alliance;
+  kills: SystemKills;
+  jumps: SystemJumps;
 }
 
 @Component({
@@ -52,13 +54,17 @@ export class SystemsTableComponent implements OnInit {
     return new Promise(resolve => {
       Promise.all([
         this.systems.get(systemID),
+        this.systems.getKills(systemID),
+        this.systems.getJumps(systemID),
         this.sovereignty.getCampaignsInSystem(systemID),
         this.sovereignty.getSovereignty(systemID)
       ]).then(results => {
         var system: System = results[0];
-        var campaigns: Campaign[] = results[1];
+        var kills: SystemKills = results[1];
+        var jumps: SystemJumps = results[2];
+        var campaigns: Campaign[] = results[3];
         this.campaignsList = this.campaignsList.concat(campaigns);
-        var sovereignty: Sovereignty = results[2];
+        var sovereignty: Sovereignty = results[4];
         var sovPromise: Promise<any>;
 
         if (sovereignty.alliance_id)
@@ -87,7 +93,9 @@ export class SystemsTableComponent implements OnInit {
             sovereignty: sovereignty,
             campaigns: campaigns,
             faction: faction,
-            alliance: alliance
+            alliance: alliance,
+            kills: kills,
+            jumps: jumps
           });
 
           resolve(systemDetails);

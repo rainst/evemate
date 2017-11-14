@@ -5,6 +5,7 @@
       <th scope="col">Security</th>
       <th scope="col">Constellation ({{constellationList.length}})</th>
       <th scope="col">Sov</th>
+      <th scope="col">Activity</th>
       <th scope="col">Events ({{campaignsList.length}})</th>
     </tr>
   </thead>
@@ -23,6 +24,9 @@
           {{system.faction.name}}
         </a>
         <span *ngIf="!(system.sovereignty.faction_id || system.sovereignty.alliance_id)">-</span>
+      </td>
+      <td>
+        <small>Jumps: {{system.jumps.ship_jumps}}, Ships: {{system.kills.ship_kills}}, Pods: {{system.kills.pod_kills}}, NPCs: {{system.kills.npc_kills}}</small>
       </td>
       <td>
         <span *ngIf="system.campaigns.length > 0">

@@ -17,14 +17,34 @@ export class System extends BaseEveModel {
 
 export class SystemKills extends BaseEveModel {
   system_id: number;
-  ship_kills: number = 0;
-  npc_kills: number = 0;
-  pod_kills: number = 0;
+  ship_kills: number;
+  npc_kills: number;
+  pod_kills: number;
+
+  constructor(params) {
+    super(params);
+
+    if (! this.ship_kills)
+      this.ship_kills = 0;
+
+    if (! this.npc_kills)
+      this.npc_kills = 0;
+
+    if (! this.pod_kills)
+      this.pod_kills = 0;
+  }
 }
 
 export class SystemJumps extends BaseEveModel {
   system_id: number;
-  ship_jumps: number = 0;
+  ship_jumps: number;
+
+  constructor(params) {
+    super(params);
+
+    if (! this.ship_jumps)
+      this.ship_jumps = 0;
+  }
 }
 
 @Injectable()
