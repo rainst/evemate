@@ -9,12 +9,12 @@ import { EveTypesService } from './evetypes.service';
 })
 export class SearchResultComponent implements OnInit {
   @Input() private id: number;
-  @Input() private name: string;
+  @Input() name: string;
   @Input() private category: string;
 
-  private iconUrl: string;
-  private description: string;
-  private resultUrl: string;
+  iconUrl: string;
+  description: string;
+  resultUrl: string;
 
   constructor(
     private eve: EveService,

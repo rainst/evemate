@@ -7,7 +7,7 @@ import { CharacterSkills } from './evesession.class';
 })
 
 export class SkillsComponent {
-  private characterSkills: CharacterSkills;
+  characterSkills: CharacterSkills;
 
   constructor (
     private eve: EveService

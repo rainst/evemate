@@ -6,11 +6,11 @@ import { Router, ActivatedRoute } from '@angular/router';
   templateUrl: 'search.component.html'
 })
 export class SearchComponent implements OnInit {
-  private term:string;
-  private searchDomain: string;
-  private results: {id:number, name:string, category:string}[];
-  private status: string;
-  private searchDomains = [
+  term:string;
+  searchDomain: string;
+  results: SearchResults;
+  status: string;
+  searchDomains = [
     { displayName: 'Agents', name: 'agent'},
     { displayName: 'Alliances', name: 'alliance'},
     { displayName: 'Characters', name: 'character'},

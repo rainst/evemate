@@ -12,16 +12,16 @@ import { EveRegionsService, Region } from './everegions.service';
   templateUrl: 'system.component.html'
 })
 export class SystemComponent implements OnInit {
-  private systemID: number;
-  private system: System;
-  private constellation: Constellation;
-  private region: Region;
-  private systemKills: SystemKills;
-  private systemJumps: SystemJumps;
-  private faction: Faction;
-  private alliance: Alliance;
-  private corporation: Corporation;
-  private campaigns: Campaign[];
+  systemID: number;
+  system: System;
+  constellation: Constellation;
+  region: Region;
+  systemKills: SystemKills;
+  systemJumps: SystemJumps;
+  faction: Faction;
+  alliance: Alliance;
+  corporation: Corporation;
+  campaigns: Campaign[];
   
   constructor(
     private route: ActivatedRoute,

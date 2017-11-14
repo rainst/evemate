@@ -9,12 +9,12 @@ import { EveConstellationsService } from './eveconstellations.service';
   templateUrl: 'alliance.component.html'
 })
 export class AllianceComponent implements OnInit {
-  private alliance: Alliance;
-  private icon: AllianceIcon;
-  private executor: Corporation;
-  private systemSovIDs: number[] = [];
-  private corporationsList: Corporation[] = [];
-  private memberCount: number = 0;
+  alliance: Alliance;
+  icon: AllianceIcon;
+  executor: Corporation;
+  systemSovIDs: number[] = [];
+  corporationsList: Corporation[] = [];
+  memberCount: number = 0;
 
   constructor(
     private route: ActivatedRoute,

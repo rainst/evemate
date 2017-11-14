@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EveAPIService } from './eveapi.service';
 import { BaseEveModel } from './eve.class';
 
-class Character extends BaseEveModel {
+export class Character extends BaseEveModel {
   name: string;
   description:string;
   birthday: Date;
@@ -19,7 +19,7 @@ class Character extends BaseEveModel {
   }
 }
 
-class CharacterPortraits extends BaseEveModel {
+export class CharacterPortraits extends BaseEveModel {
   px64x64: string
   px128x128: string
   px256x256: string

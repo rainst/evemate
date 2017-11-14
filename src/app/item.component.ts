@@ -8,11 +8,11 @@ import { EveUnits } from './eve.class';
   templateUrl: 'item.component.html'
 })
 export class ItemComponent implements OnInit {
-  private typeID: number;
-  private item: EveType;
-  private attributes: {value: number, details: DogmaAttribute}[];
-  private effects: DogmaEffect[];
-  private units: EveUnits = new EveUnits();
+  typeID: number;
+  item: EveType;
+  attributes: {value: number, details: DogmaAttribute}[];
+  effects: DogmaEffect[];
+  units: EveUnits = new EveUnits();
 
   constructor(
     private router: Router,

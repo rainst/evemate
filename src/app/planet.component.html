@@ -1,9 +1,9 @@
-<h5>{{name}}</h5>
+<h5>{{planet.name}}</h5>
 <p>ID: {{planetID}}</p>
-<p>System: <a routerLink="/system/{{systemID}}">{{systemID}}</a></p>
-<div *ngIf="moons">
-  <h5>Moons ({{moons.length}})</h5>
-  <dl *ngFor="let moon of moons">
+<p>System: <a routerLink="/system/{{planet.system_id}}">{{planet.system_id}}</a></p>
+<div *ngIf="planet.moons">
+  <h5>Moons ({{planet.moons.length}})</h5>
+  <dl *ngFor="let moon of planet.moons">
     <dt><a routerLink="/moon/{{moon}}">{{moon}}</a></dt>
   </dl>
 </div>

@@ -9,9 +9,9 @@ import { EveRegionsService, Region } from './everegions.service';
 })
 
 export class ConstellationComponent implements OnInit {
-  private constellationID: number;
-  private constellation: Constellation;
-  private region: Region;
+  constellationID: number;
+  constellation: Constellation;
+  region: Region;
   
   constructor(
     private route: ActivatedRoute,

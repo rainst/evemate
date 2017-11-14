@@ -7,9 +7,9 @@ import { EveSession } from "./evesession.class";
 })
 
 export class UserComponent {
-  private accessToken: string;
-  private eveSession: EveSession;
-  private characterPortraits: any;
+  accessToken: string;
+  eveSession: EveSession;
+  characterPortraits: any;
   
   constructor(
     private eve: EveService

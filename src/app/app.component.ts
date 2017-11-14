@@ -8,10 +8,10 @@ import { Subscription } from 'rxjs/Subscription';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  isSessionActive: boolean;
+  eveTime = new Date();
   private eveTimeInterval;
-  private isSessionActive: boolean;
   private isSessionActiveSubscription: Subscription;
-  private eveTime = new Date();
   constructor(
     private eve: EveService
   ) {}

@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { EveMoonsService } from './evemoons.service';
+import { EveMoonsService, Moon } from './evemoons.service';
 
 @Component({
   templateUrl: 'moon.component.html'
 })
 
 export class MoonComponent implements OnInit {
-  private moonID: number;
-  private name: string;
-  private systemID: number;
+  moonID: number;
+  moon: Moon;
   
   constructor(
     private route: ActivatedRoute,
@@ -19,11 +18,7 @@ export class MoonComponent implements OnInit {
   ngOnInit() { 
     this.route.params.subscribe(params => {
       this.moonID = parseInt(params.id, 10);
-      this.moons.get(this.moonID).then(moon => {
-        console.log(moon);
-        this.name = moon.name;
-        this.systemID = moon.system_id;
-      });
+      this.moons.get(this.moonID).then(moon => this.moon = moon);
     });
   }
 }

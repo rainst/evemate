@@ -21,6 +21,7 @@ import { EveFactionsService } from './evefactions.service';
 import { EveStationsService } from './evestations.service';
 import { EveNamesService } from './evenames.service';
 import { EveAPIService } from './eveapi.service';
+import { EveSearchService } from './evesearch.service';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login.component';
@@ -93,7 +94,7 @@ const appRoutes: Routes = [
     HttpModule,
     RouterModule.forRoot(appRoutes, { enableTracing: false })
   ],
-  providers: [EveService, EveAPIService, EveNamesService, CookieService, AuthGuard, EveStationsService, EveFactionsService, EveCorporationsService, EveAlliancesService, EveMoonsService, EveSovereigntyService, EveCharactersService, EvePlanetsService, EveTypesService, EveSystemsService, EveRegionsService, EveConstellationsService],
+  providers: [EveService, EveSearchService, EveAPIService, EveNamesService, CookieService, AuthGuard, EveStationsService, EveFactionsService, EveCorporationsService, EveAlliancesService, EveMoonsService, EveSovereigntyService, EveCharactersService, EvePlanetsService, EveTypesService, EveSystemsService, EveRegionsService, EveConstellationsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

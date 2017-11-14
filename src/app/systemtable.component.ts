@@ -24,9 +24,9 @@ export class SystemsTableComponent implements OnInit {
   @Input() private systemsID?: number[] = [];
   @Input() private constellationsID?: number[] = [];
 
-  private systemsDetails: SystemDetails[] = [];
-  private constellationList: Constellation[]= [];
-  private campaignsList: Campaign[]= [];
+  systemsDetails: SystemDetails[] = [];
+  constellationList: Constellation[]= [];
+  campaignsList: Campaign[]= [];
   
   constructor(
     private constellations: EveConstellationsService,

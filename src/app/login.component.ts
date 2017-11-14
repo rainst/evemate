@@ -8,7 +8,7 @@ import { EveService } from './eve.service';
 
 
 export class LoginComponent {
-  private loginUrl
+  loginUrl: string;
   
   constructor (
     private router: Router,

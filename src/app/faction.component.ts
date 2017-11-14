@@ -9,10 +9,10 @@ import { EveSystemsService, System } from './evesystems.service';
 })
 
 export class FactionComponent implements OnInit {
-  private faction: Faction;
-  private system: System;
-  private militia: Corporation;
-  private corporation: Corporation;
+  faction: Faction;
+  system: System;
+  militia: Corporation;
+  corporation: Corporation;
 
   constructor(
     private route: ActivatedRoute,

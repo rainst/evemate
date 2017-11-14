@@ -8,10 +8,11 @@ import { EveFactionsService, Faction } from './evefactions.service';
   templateUrl: 'corporation.component.html'
 })
 export class CorporationComponent implements OnInit {
-  private corporation: Corporation;
-  private alliance: Alliance;
-  private icon: CorporationIcon;
-  private faction: Faction;
+  corporationID: number;
+  corporation: Corporation;
+  alliance: Alliance;
+  icon: CorporationIcon;
+  faction: Faction;
 
   constructor(
     private route: ActivatedRoute,
@@ -22,9 +23,9 @@ export class CorporationComponent implements OnInit {
 
   ngOnInit() { 
     this.route.params.subscribe(params => {
-      var corporationID = parseInt(params.id, 10);
+      this.corporationID = parseInt(params.id, 10);
       
-      this.corporations.get(corporationID).then(corporation => {
+      this.corporations.get(this.corporationID).then(corporation => {
         console.log(corporation);
         this.corporation = corporation;
 
@@ -34,9 +35,7 @@ export class CorporationComponent implements OnInit {
           });
       });
 
-      this.corporations.getIcon(corporationID).then(icon => {
-        this.icon = icon;
-      });
+      this.corporations.getIcon(this.corporationID).then(icon => this.icon = icon);
     });
   }
 }

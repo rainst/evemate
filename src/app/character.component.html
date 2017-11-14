@@ -1,10 +1,10 @@
 <div class="row">
   <div class="col-md-auto">
-    <img *ngIf="portraitURL" [src]="portraitURL">
+    <img *ngIf="characterPortraits" [src]="characterPortraits.px128x128">
   </div>
-  <div class="col">
-    <h1>{{name}}</h1>
-    <p>Created on {{birthday}}</p>
-    character id: {{characterID}}
+  <div *ngIf="character" class="col">
+    <h1>{{character.name}}</h1>
+    <p>Created on {{character.birthday}}</p>
+    character id: {{this.characterID}}
   </div>
 </div>

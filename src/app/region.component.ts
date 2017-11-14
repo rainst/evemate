@@ -8,9 +8,9 @@ import { NameModel } from './evenames.service';
 })
 
 export class RegionComponent implements OnInit {
-  private region: Region;
-  private regionList: NameModel[];
-  private systemsID: number[];
+  region: Region;
+  regionList: NameModel[];
+  systemsID: number[];
 
   constructor(
     private route: ActivatedRoute,

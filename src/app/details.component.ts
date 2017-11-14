@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: 'details.component.html'
 })
 export class DetailsComponent implements OnInit {
-  private id:number;
+  id: number;
 
   constructor(private route: ActivatedRoute) { }
 
@@ -14,5 +14,4 @@ export class DetailsComponent implements OnInit {
       this.id = parseInt(params.id, 10);
     });
   }
-
 }
