@@ -1,6 +1,9 @@
-# Eve
-
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.2.1.
+# Eve Mate
+Hello capsuleer,
+[Eve Mate](http://evemate.space) is a web application that will display any information stored in the API servers of [Eve Online](https://www.eveonline.com/).
+This project is still in an early stage of developement, but anyone is free to have a look at it and help in its development!
+You can find the last stable version hosted at [evemate.space](http://evemate.space).
+Eve Mate is developed with Angular 4 using the [Angular CLI](https://github.com/angular/angular-cli).
 
 ## Development server
 
