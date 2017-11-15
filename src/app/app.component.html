@@ -11,11 +11,13 @@
     </span>
   </div>
 </nav>
-<header class="bg-light container-fluid">
-  <div class="row">
+<header class="container-fluid mb-3">
+  <div class="row bg-light">
     <div class="col">
-      <small *ngIf="serverStatus">Status: {{serverStatus.getTextStatus()}}</small>
-      <small>Eve time: {{eveTime.toUTCString()}}</small>
+      <p class="m-0 py-1">
+        <small *ngIf="serverStatus">Status: {{serverStatus.getTextStatus()}}</small>
+        <small>Eve time: {{eveTime.toUTCString()}}</small>
+      </p>
     </div>
   </div>
 </header>

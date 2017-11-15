@@ -44,9 +44,10 @@ import { AllianceComponent } from './alliance.component';
 import { StationComponent } from './station.component';
 import { FactionComponent } from './faction.component';
 import { SystemsTableComponent } from './systemtable.component';
+import { HomeComponent } from './home.component';
 
 const appRoutes: Routes = [
-  { path: '', component: LoginComponent },
+  { path: '', component: HomeComponent },
   { path: 'skills', component: SkillsComponent, canActivate: [AuthGuard]},
   { path: 'user', component: UserComponent, canActivate: [AuthGuard]},
   { path: 'item/:id', component: ItemComponent},
@@ -87,7 +88,8 @@ const appRoutes: Routes = [
     AllianceComponent,
     FactionComponent,
     StationComponent,
-    SystemsTableComponent
+    SystemsTableComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
