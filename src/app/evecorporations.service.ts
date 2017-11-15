@@ -20,6 +20,9 @@ export class Corporation extends BaseEveModel {
   constructor (rawData: any) {
     super(rawData);
 
+    if (rawData.corporation_description)
+      this.corporation_description = rawData.corporation_description.replace(/<\/?[^>]+(>|$)/g, "");
+
     rawData.creation_date && (this.creation_date = new Date(rawData.creation_date));
   }
 }
@@ -48,7 +51,7 @@ export class EveCorporationsService {
         resolve(this.corporations.get(corporationID));
       else
         this.api.get(this.APICorporation.replace('{corporation_id}', corporationID.toString())).then(res => {
-          var corporation = res.json();
+          var corporation = new Corporation(res.json());
           corporation.id = corporationID;
           this.corporations.set(corporationID, corporation);
           resolve(corporation);

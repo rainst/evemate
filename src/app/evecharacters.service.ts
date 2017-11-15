@@ -3,6 +3,7 @@ import { EveAPIService } from './eveapi.service';
 import { BaseEveModel } from './eve.class';
 
 export class Character extends BaseEveModel {
+  id: number;
   name: string;
   description:string;
   birthday: Date;
@@ -16,6 +17,9 @@ export class Character extends BaseEveModel {
   constructor (rawData) {
     super(rawData);
     this.birthday = new Date(this.birthday);
+
+    if (rawData.description)
+      this.description = rawData.description.replace(/<\/?[^>]+(>|$)/g, "");
   }
 }
 
@@ -48,7 +52,9 @@ export class EveCharactersService {
         resolve(this.characters.get(characterID));
       else
         this.api.get(this.APICharacterInfo.replace('{CharacterID}', characterID.toString())).then(res => {
-          var character = new Character(res.json());
+          var rawCharacter = res.json();
+          rawCharacter.id = characterID;
+          var character = new Character(rawCharacter);
           this.characters.set(characterID, character);
           resolve(character);
         });

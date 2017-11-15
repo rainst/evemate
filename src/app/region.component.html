@@ -1,11 +1,12 @@
 <div *ngIf="region">
   <h5>{{region.name}}</h5>
-  <p>{{region.description}}</p>
-  
+  <p>{{region.description}}</p>  
   <system-table [constellationsID]="region.constellations"></system-table>
 </div>
 
-
-<ul *ngIf="regionList">
-  <li *ngFor="let region of regionList"><a routerLink="/region/{{region.id}}">{{region.name}}</a></li>
-</ul>
+<div *ngIf="regionList">
+  <p>Click on a region to get more details</p>
+  <ul class="list-unstyled">
+    <li *ngFor="let region of regionList"><a routerLink="/region/{{region.id}}">{{region.name}}</a></li>
+  </ul>
+</div>

@@ -1,39 +1,29 @@
 <div *ngIf="system">
   <h1>{{system.name}}</h1>
   <p *ngIf="region && constellation">Location: <a routerLink="/region/{{region.region_id}}">{{region.name}}</a> / <a routerLink="/constellation/{{constellation.constellation_id}}">{{constellation.name}}</a></p>
-  <p>
-    Stargates: {{system.stargates.length}}<br>
-    <span *ngIf="systemJumps">Jumps in the last hour: {{systemJumps.ship_jumps}}<br></span>
-    <span *ngIf="systemKills">
-      Ships destroyed in the last hour: {{systemKills.ship_kills}}<br>
-      Pods killed in the last hour: {{systemKills.pod_kills}}<br>
-      NPC killed in the last hour: {{systemKills.npc_kills}}<br>
-    </span>
-  </p>
+  <ul class="list-unstyled">
+    <li>Stargates: {{system.stargates.length}}</li>
+    <li *ngIf="systemJumps">Jumps in the last hour: {{systemJumps.ship_jumps}}</li>
+    <li *ngIf="systemKills">Ships destroyed in the last hour: {{systemKills.ship_kills}}</li>
+    <li *ngIf="systemKills">Pods killed in the last hour: {{systemKills.pod_kills}}</li>
+    <li *ngIf="systemKills">NPC killed in the last hour: {{systemKills.npc_kills}}</li>
+  </ul>
 </div>
 
 <div *ngIf="faction || alliance || corporation">
   <h5>Sovereignty</h5>
-  <p>
-    <span *ngIf="faction">
-      Faction: <a routerLink="/faction/{{faction.faction_id}}">{{faction.name}}</a>
-    </span>
-    <span *ngIf="alliance">
-      Alliance: <a routerLink="/alliance/{{alliance.id}}">{{alliance.alliance_name}} [{{alliance.ticker}}]</a><br>
-    </span>
-    <span *ngIf="corporation">
-      Corporation: <a routerLink="/corporation/{{corporation.id}}">{{corporation.corporation_name}} [{{corporation.ticker}}]</a>
-    </span>
-  </p>
+  <ul class="list-unstyled">
+    <li *ngIf="faction">Faction: <a routerLink="/faction/{{faction.faction_id}}">{{faction.name}}</a></li>
+    <li *ngIf="alliance">Alliance: <a routerLink="/alliance/{{alliance.alliance_id}}">{{alliance.alliance_name}} [{{alliance.ticker}}]</a><br></li>
+    <li *ngIf="corporation">Corporation: <a routerLink="/corporation/{{corporation.id}}">{{corporation.corporation_name}} [{{corporation.ticker}}]</a></li>
+  </ul>
 </div>
 
-<div *ngIf="campaigns">
+<div *ngIf="campaigns && campaigns.length">
   <h5>Events</h5>
-  <dl>
-    <dd *ngFor="let campaign of campaigns">
-      <p>Event type: {{campaign.event_type}}<br>Start date: {{campaign.start_time}}</p>
-    </dd>
-  </dl>
+  <ul class="list-unstyled">
+    <li *ngFor="let campaign of campaigns">Event type: {{campaign.event_type}}, start time: {{campaign.start_time}}</li>
+  </ul>
 </div>
 
 <!-- <div *ngIf="stations">

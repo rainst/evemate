@@ -1,8 +1,12 @@
 <div *ngIf="faction">
   <h1><img *ngIf="icon" [src]="icon.px64x64">{{faction.name}}</h1>
-  <p>{{faction.description}}<br>
-  <p>Systems: {{faction.station_system_count}}<br>Total stations: {{faction.station_count}}<br>Size factor: {{faction.size_factor}}</p>
-  <p *ngIf="militia">Militia corp: <a routerLink="/corporation/{{militia.id}}">{{militia.corporation_name}}</a></p>
-  <p *ngIf="corporation">Corporation: <a routerLink="/corporation/{{corporation.id}}">{{corporation.corporation_name}}</a></p>
-  <p *ngIf="system">Home System: <a routerLink="/system/{{system.system_id}}">{{system.name}}</a></p>
+  <p>{{faction.description}}</p>
+  <ul class="list-unstyled">
+    <li>Systems: {{faction.station_system_count}}</li>
+    <li>Total stations: {{faction.station_count}}</li>
+    <li>Size factor: {{faction.size_factor}}</li>
+    <li *ngIf="militia">Militia corp: <a routerLink="/corporation/{{militia.id}}">{{militia.corporation_name}}</a></li>
+    <li *ngIf="corporation">Corporation: <a routerLink="/corporation/{{corporation.id}}">{{corporation.corporation_name}}</a></li>
+    <li *ngIf="system">Home System: <a routerLink="/system/{{system.system_id}}">{{system.name}}</a></li>
+  </ul>
 </div>

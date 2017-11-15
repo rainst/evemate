@@ -1,10 +1,15 @@
-<div class="row">
+<div *ngIf="character" class="row">
   <div class="col-md-auto">
     <img *ngIf="characterPortraits" [src]="characterPortraits.px128x128">
   </div>
-  <div *ngIf="character" class="col">
+  <div class="col">
     <h1>{{character.name}}</h1>
-    <p>Created on {{character.birthday}}</p>
-    character id: {{this.characterID}}
+    <p *ngIf="character.description">{{character.description}}</p>
+    <ul class="list-unstyled">
+      <li>Created on {{character.birthday}}</li>
+      <li>Gender: {{character.gender}}</li>
+      <li>Security Status: {{character.security_status}}</li>
+      <li *ngIf="corporation">Corporation: <a routerLink="/corporation/{{corporation.id}}">{{corporation.corporation_name}}</a></li>
+    </ul>
   </div>
 </div>
