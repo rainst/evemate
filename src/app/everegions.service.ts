@@ -8,6 +8,13 @@ export class Region extends BaseEveModel {
   description: string;
   constellations: number[];
   region_id: number;
+
+  constructor (rawData: any) {
+    super(rawData);
+
+    if (rawData.description)
+      this.description = rawData.description.replace(/<\/?[^>]+(>|$)/g, "");
+  }
 }
 
 @Injectable()
