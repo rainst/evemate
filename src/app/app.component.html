@@ -3,11 +3,11 @@
   <div class="navbar-nav">
     <a class="nav-item nav-link" routerLinkActive="active" routerLink="/search">Search</a>
     <a class="nav-item nav-link" routerLinkActive="active" routerLink="/regions">Region List</a>
-    <a class="nav-item nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="!isSessionActive" routerLink='/'>Login</a>
+    <a class="nav-item nav-link" routerLinkActive="active" *ngIf="!isSessionActive" routerLink='/login'>Login</a>
     <span *ngIf="isSessionActive">
       <a class="nav-item nav-link" routerLinkActive="active" routerLink="/user">User Info</a>
       <a class="nav-item nav-link" routerLinkActive="active" routerLink="/skills">Skills</a>
-      <a class="nav-item nav-link" routerLinkActive="active" routerLink="/" [routerLinkActiveOptions]="{exact: true}" (click)="logout()">Logout</a>
+      <a class="nav-item nav-link" routerLink="/" (click)="logout()">Logout</a>
     </span>
   </div>
 </nav>

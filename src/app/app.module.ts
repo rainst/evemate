@@ -65,6 +65,7 @@ const appRoutes: Routes = [
   { path: 'faction/:id', component: FactionComponent},
   { path: 'station/:id', component: StationComponent},
   { path: 'search', component: SearchComponent },
+  { path: 'login', component: LoginComponent },
   { path: '**', component: PageNotFoundComponent }
 ];
 
