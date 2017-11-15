@@ -7,6 +7,7 @@ import { EveAlliancesService, Alliance } from './evealliances.service';
 import { EveFactionsService, Faction } from './evefactions.service';
 import { EveConstellationsService, Constellation } from './eveconstellations.service';
 import { EveRegionsService, Region } from './everegions.service';
+import { LocationService } from './location.service';
 
 @Component({
   templateUrl: 'system.component.html'
@@ -29,6 +30,7 @@ export class SystemComponent implements OnInit {
     private constellations: EveConstellationsService,
     private regions: EveRegionsService,
     private sovereignty: EveSovereigntyService,
+    private location: LocationService,
     private alliances: EveAlliancesService,
     private corporations: EveCorporationsService,
     private factions: EveFactionsService
@@ -39,6 +41,8 @@ export class SystemComponent implements OnInit {
       this.systemID = parseInt(params.id, 10);
       this.systems.get(this.systemID).then(system => {
         this.system = system;
+        this.location.set('EVE Mate - System: ' + this.system.name);
+
         this.constellations.get(system.constellation_id).then(constellation => {
           this.constellation = constellation;
           this.regions.get(constellation.region_id).then(region => this.region = region);

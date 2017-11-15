@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EveService } from './eve.service';
+import { LocationService } from './location.service';
 
 @Component({
   templateUrl: './login.component.html'
@@ -12,6 +13,7 @@ export class LoginComponent {
   
   constructor (
     private router: Router,
+    private location: LocationService,
     private route: ActivatedRoute,
     private eve: EveService
   ) {}
@@ -19,7 +21,8 @@ export class LoginComponent {
   ngOnInit() {
     if (this.route.snapshot.fragment) {
       var params = {};
-      
+      this.location.set('EVE Mate - Login');
+
       if (this.route.snapshot.fragment) {
         this.route.snapshot.fragment.split('&').forEach(pair => {
           var item = pair.split('=');

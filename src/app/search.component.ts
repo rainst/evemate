@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { EveService } from './eve.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { LocationService } from './location.service';
 
 @Component({
   templateUrl: 'search.component.html'
@@ -26,11 +27,13 @@ export class SearchComponent implements OnInit {
 
   constructor(
     private eve: EveService,
+    private location: LocationService,
     private router: Router,
     private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
+    this.location.set('EVE Mate - Search');
     this.route.queryParams.subscribe((queryParams: {term:string, searchDomain:string}) => {
       this.term = queryParams.term || '';
       this.searchDomain = queryParams.searchDomain || 'inventorytype';

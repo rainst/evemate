@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { EveService } from "./eve.service";
 import { EveTypesService, EveType, DogmaAttribute, DogmaEffect } from './evetypes.service';
 import { EveUnits } from './eve.class';
+import { LocationService } from './location.service';
 
 @Component({
   templateUrl: 'item.component.html'
@@ -18,6 +19,7 @@ export class ItemComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private eve: EveService,
+    private location: LocationService,
     private types: EveTypesService
   ) { }
 
@@ -25,8 +27,8 @@ export class ItemComponent implements OnInit {
     this.route.params.subscribe(data => {
       this.typeID = parseInt(data.id, 10);
       this.types.get(this.typeID).then(item => {
-        console.log(item);
         this.item = item;
+        this.location.set('EVE Mate - Item: ' + this.item.name);
         this.attributes = [];
         this.effects = [];
 
@@ -46,5 +48,4 @@ export class ItemComponent implements OnInit {
       });
     })
   }
-
 }
