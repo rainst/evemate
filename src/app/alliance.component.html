@@ -1,7 +1,9 @@
 <div *ngIf="alliance">
   <h1><img *ngIf="icon" [src]="icon.px64x64">{{alliance.alliance_name}} [{{alliance.ticker}}]</h1>
-  <p *ngIf="executor">Executor corp: <a routerLink="/corporation/{{executor.id}}">{{executor.corporation_name}}</a></p>
-  <p>Founded: {{alliance.date_founded}}</p>
+  <ul class="list-unstyled">
+    <li *ngIf="executor">Executor corp: <a routerLink="/corporation/{{executor.id}}">{{executor.corporation_name}}</a></li>
+    <li>Founded: {{alliance.date_founded}}</li>
+  </ul>
 </div>
 <system-table *ngIf="systemSovIDs.length > 0" [systemsID]="systemSovIDs"></system-table>
 <table *ngIf="corporationsList.length > 0" class="table table-hover table-sm">
