@@ -1,22 +1,25 @@
-<div class="container-fluid">
-  <header class="row">
-    <div class="col">
-      <h1><a routerLink="/">EVE Mate</a></h1>
-      <p>Eve time: {{eveTime.toUTCString()}}</p>
-    </div>
-  </header>
-  <div class="row">
-    <nav class="col">
-      <a routerLink="/search">Search</a>
-      <a routerLink="/regions">Region List</a>
-      <a *ngIf="!isSessionActive" routerLink='/'>Login</a>
-      <span *ngIf="isSessionActive">
-        <a routerLink="/user">User Info</a>
-        <a routerLink="/skills">Skills</a>
-        <a routerLink="/" (click)="logout()">Logout</a>
-      </span>
-    </nav>
+<nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+  <a class="navbar-brand" routerLink="/">EVE Mate</a>
+  <div class="navbar-nav">
+    <a class="nav-item nav-link" routerLinkActive="active" routerLink="/search">Search</a>
+    <a class="nav-item nav-link" routerLinkActive="active" routerLink="/regions">Region List</a>
+    <a class="nav-item nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngIf="!isSessionActive" routerLink='/'>Login</a>
+    <span *ngIf="isSessionActive">
+      <a class="nav-item nav-link" routerLinkActive="active" routerLink="/user">User Info</a>
+      <a class="nav-item nav-link" routerLinkActive="active" routerLink="/skills">Skills</a>
+      <a class="nav-item nav-link" routerLinkActive="active" routerLink="/" [routerLinkActiveOptions]="{exact: true}" (click)="logout()">Logout</a>
+    </span>
   </div>
+</nav>
+<header class="bg-light container-fluid">
+  <div class="row">
+    <div class="col">
+      <small *ngIf="serverStatus">Status: {{serverStatus.getTextStatus()}}</small>
+      <small>Eve time: {{eveTime.toUTCString()}}</small>
+    </div>
+  </div>
+</header>
+<div class="container-fluid">
   <div class="row">
     <main class="col">
       <router-outlet></router-outlet>

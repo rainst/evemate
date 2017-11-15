@@ -1,6 +1,7 @@
 import { Component, OnInit , OnDestroy } from '@angular/core';
 import { EveService } from './eve.service';
 import { Subscription } from 'rxjs/Subscription';
+import { EveStatusService, EveStatus } from './evestatus.service';
 
 @Component({
   selector: 'app-root',
@@ -10,14 +11,18 @@ import { Subscription } from 'rxjs/Subscription';
 export class AppComponent {
   isSessionActive: boolean;
   eveTime = new Date();
+  serverStatus: EveStatus;
+
   private eveTimeInterval;
   private isSessionActiveSubscription: Subscription;
   constructor(
-    private eve: EveService
+    private eve: EveService,
+    private status: EveStatusService
   ) {}
 
   ngOnInit() {
     this.startEveInterval();
+    this.status.get().then(status => this.serverStatus = status);
     
     this.isSessionActiveSubscription = this.eve.getSessionActiveSubject().subscribe(isActive => this.isSessionActive = isActive);
   }
