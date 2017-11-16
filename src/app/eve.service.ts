@@ -33,7 +33,6 @@ export class EveService {
   
   private APIAuth = 'https://login.eveonline.com/oauth/authorize/';
   private APIVerify = 'https://esi.tech.ccp.is/verify/';
-  private APISearch = 'search/';
 
   constructor(
     private api: EveAPIService,
@@ -131,20 +130,6 @@ export class EveService {
           // }, console.log);
         }, console.log);
       }
-    });
-  }
-
-  search(term, searchDomain): Promise<any> {
-    return new Promise(resolve => {
-      this.api.get(this.APISearch, {params: {categories: searchDomain, search: term, strict: false}}).then(res => {
-        var result = res.json();
-
-        if (result[searchDomain])
-          this.names.getNames(result[searchDomain]).then(resolve);
-        else  
-          resolve();
-
-      }, console.log);
     });
   }
 }

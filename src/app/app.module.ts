@@ -33,7 +33,7 @@ import { ItemComponent } from "./item.component";
 import { DetailsComponent } from './details.component';
 import { SearchComponent } from './search.component';
 import { CharacterComponent } from './character.component';
-import { SearchResultComponent } from './searchresult.component';
+import { SearchResultsComponent } from './searchresults.component';
 import { PageNotFoundComponent } from './pagenotfound.component';
 import { SystemComponent } from './system.component';
 import { RegionComponent } from './region.component';
@@ -79,7 +79,7 @@ const appRoutes: Routes = [
     DetailsComponent,
     CharacterComponent,
     SearchComponent,
-    SearchResultComponent,
+    SearchResultsComponent,
     PageNotFoundComponent,
     SystemComponent,
     RegionComponent,

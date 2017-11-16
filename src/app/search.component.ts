@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { EveService } from './eve.service';
+import { EveSearchService, SearchResults, SearchFilter } from './evesearch.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LocationService } from './location.service';
 
@@ -8,25 +8,13 @@ import { LocationService } from './location.service';
 })
 export class SearchComponent implements OnInit {
   term:string;
-  searchDomain: string;
+  filter: string;
   results: SearchResults;
   status: string;
-  searchDomains = [
-    { displayName: 'Agents', name: 'agent'},
-    { displayName: 'Alliances', name: 'alliance'},
-    { displayName: 'Characters', name: 'character'},
-    { displayName: 'Constellations', name: 'constellation'},
-    { displayName: 'Corporations', name: 'corporation'},
-    { displayName: 'Factions', name: 'faction'},
-    { displayName: 'Items', name: 'inventorytype'},
-    { displayName: 'Regions', name: 'region'},
-    { displayName: 'Solar systems', name: 'solarsystem'},
-    { displayName: 'Stations', name: 'station'},
-    { displayName: 'Wormholes', name: 'wormhole'}
-  ];
+  filters: SearchFilter[];
 
   constructor(
-    private eve: EveService,
+    private search: EveSearchService,
     private location: LocationService,
     private router: Router,
     private route: ActivatedRoute
@@ -34,22 +22,20 @@ export class SearchComponent implements OnInit {
 
   ngOnInit() {
     this.location.set('EVE Mate - Search');
-    this.route.queryParams.subscribe((queryParams: {term:string, searchDomain:string}) => {
-      this.term = queryParams.term || '';
-      this.searchDomain = queryParams.searchDomain || 'inventorytype';
-      
-      if (this.term.length > 2) {
-        this.status = 'Search in progress..';
-        this.results = [];
+    this.filters = this.search.filters;
 
-        this.eve.search(this.term, this.searchDomain).then(results => {
-          // console.log(results)
-          if (results) {
-            this.results = results;
-            this.status = 'Got ' + results.length + ' result' + (results.length > 1 ? 's' : '');
-          }
-          else
-            this.status = 'No matches for that';
+    this.route.queryParams.subscribe((queryParams: {term:string, filter:string}) => {
+      this.term = queryParams.term || '';
+      this.filter = queryParams.filter || 'all';
+      
+      if (! this.search.filters.some(filter => {return this.filter === filter.name}))
+        this.status = 'Search filter not valid!';
+      else if (this.term.length > 2) {
+        this.status = 'Search in progress..';
+
+        this.search.get(this.term, this.filter).then(results => {
+          this.results = results;
+          this.status = results.count() + ' result' + (results.count() === 1 ? '' : 's');
         });
       }
       else
@@ -58,7 +44,7 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  search(): void {
-    this.router.navigate(['search'], {queryParams: {term: this.term, searchDomain: this.searchDomain}});
+  newSearch(): void {
+    this.router.navigate(['search'], {queryParams: {term: this.term, filter: this.filter}});
   }
 }

@@ -1,0 +1,10 @@
+<div *ngIf="categories">
+  <div *ngFor="let category of categories">
+    <p>{{category.name}} ({{category.results.length}}):</p>
+    <ul class="list-unstyled">
+      <li *ngFor="let result of category.results">
+        <a routerLink="/{{category.localURL}}/{{result.id}}">{{result.name}}</a>
+      </li>
+    </ul>
+  </div>
+</div>
