@@ -2,7 +2,7 @@
   <h1>{{system.name}}</h1>
   <p *ngIf="region && constellation">Location: <a routerLink="/region/{{region.region_id}}">{{region.name}}</a> / <a routerLink="/constellation/{{constellation.constellation_id}}">{{constellation.name}}</a></p>
   <ul class="list-unstyled">
-    <li>Stargates: {{system.stargates.length}}</li>
+    <li *ngIf="system.stargate">Stargates: {{system.stargates.length}}</li>
     <li *ngIf="systemJumps">Jumps in the last hour: {{systemJumps.ship_jumps}}</li>
     <li *ngIf="systemKills">Ships destroyed in the last hour: {{systemKills.ship_kills}}</li>
     <li *ngIf="systemKills">Pods killed in the last hour: {{systemKills.pod_kills}}</li>
