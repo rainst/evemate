@@ -14,7 +14,7 @@ export class EveAPIService {
         .catch(error => {
           console.log('Error in POST request');
           console.log(error);
-          reject();
+          reject(error.json());
         });
     });
   }
@@ -26,7 +26,7 @@ export class EveAPIService {
         .catch(error => {
           console.log('Error in GET request');
           console.log(error);
-          reject();
+          reject(error.json());
         });
     });
   }
