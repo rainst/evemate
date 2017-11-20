@@ -4,7 +4,7 @@ import { FormsModule }   from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpModule } from '@angular/http';
 
-import { EveService } from './eve.service';
+import { EveSSOService } from './evesso.service';
 import { CookieService } from 'ngx-cookie-service';
 import { AuthGuard } from "./authguard.service";
 import { EveCharactersService } from './evecharacters.service';
@@ -99,7 +99,7 @@ const appRoutes: Routes = [
     HttpModule,
     RouterModule.forRoot(appRoutes, { enableTracing: false })
   ],
-  providers: [EveService, LocationService, EveStatusService, EveSearchService, EveAPIService, EveNamesService, CookieService, AuthGuard, EveStationsService, EveFactionsService, EveCorporationsService, EveAlliancesService, EveMoonsService, EveSovereigntyService, EveCharactersService, EvePlanetsService, EveTypesService, EveSystemsService, EveRegionsService, EveConstellationsService],
+  providers: [EveSSOService, LocationService, EveStatusService, EveSearchService, EveAPIService, EveNamesService, CookieService, AuthGuard, EveStationsService, EveFactionsService, EveCorporationsService, EveAlliancesService, EveMoonsService, EveSovereigntyService, EveCharactersService, EvePlanetsService, EveTypesService, EveSystemsService, EveRegionsService, EveConstellationsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

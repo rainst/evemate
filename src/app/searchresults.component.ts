@@ -1,5 +1,4 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges} from '@angular/core';
-import { EveService } from './eve.service';
 import { EveNamesService, NameModel } from './evenames.service';
 import { EveSearchService, SearchResults } from './evesearch.service';
 
@@ -12,7 +11,6 @@ export class SearchResultsComponent implements OnInit {
   categories: {name: string, localURL:string, results: NameModel[]}[];
 
   constructor(
-    private eve: EveService,
     private names: EveNamesService,
     private search: EveSearchService
   ) { }

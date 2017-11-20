@@ -1,3 +1,5 @@
 <div class="text-center">
-  <a *ngIf="loginUrl" [href]="loginUrl" class="btn btn-primary"><span class="glyphicon glyphicon-link"></span> Login with EVE SSO</a>
+  <p *ngIf="error" class="alert alert-danger" role="alert">Error: {{error.error_description}}</p>
+  <a *ngIf="loginURL" [href]="loginURL" class="btn btn-primary">Login with EVE SSO</a>
+  <p *ngIf="session">You are logged in as {{session.CharacterName}}</p>
 </div>

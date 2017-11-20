@@ -3,11 +3,10 @@
   <div class="navbar-nav">
     <a class="nav-item nav-link" routerLinkActive="active" routerLink="/search">Search</a>
     <a class="nav-item nav-link" routerLinkActive="active" routerLink="/regions">Region List</a>
-    <a class="nav-item nav-link" routerLinkActive="active" *ngIf="!isSessionActive" routerLink='/login'>Login</a>
-    <span *ngIf="isSessionActive">
+    <a class="nav-item nav-link" routerLinkActive="active" *ngIf="!session" routerLink='/login'>Login</a>
+    <span *ngIf="session">
       <a class="nav-item nav-link" routerLinkActive="active" routerLink="/user">User Info</a>
-      <a class="nav-item nav-link" routerLinkActive="active" routerLink="/skills">Skills</a>
-      <a class="nav-item nav-link" routerLink="/" (click)="logout()">Logout</a>
+      <span class="nav-item nav-link" (click)="logout()">Logout</span>
     </span>
   </div>
 </nav>
@@ -17,6 +16,7 @@
       <p class="m-0 py-1">
         <small *ngIf="serverStatus">Server status: {{serverStatus.getTextStatus()}}</small>
         <small>Eve time: {{eveTime.toUTCString()}}</small>
+        <small *ngIf="session && sessionTime">Session expires in: {{sessionTime}}</small>
       </p>
     </div>
   </div>

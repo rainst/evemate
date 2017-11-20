@@ -1,21 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Router, CanActivate } from '@angular/router';
-import { EveService } from "./eve.service";
+import { CanActivate } from '@angular/router';
+import { EveSSOService, EveSession } from './evesso.service';
 
 @Injectable()
 
 export class AuthGuard implements CanActivate {
   constructor (
-    private eve: EveService, 
-    private router: Router) {}
+    private eve: EveSSOService ) {}
   
-  canActivate(a, b): Promise<boolean> {
-    return new Promise(resolve => {
-      this.eve.isSessionActive().then(isActive => {
-        if (!isActive)
-          this.router.navigate(['/']);
-      resolve(isActive);
-      });
-    });
+  canActivate(route): Promise<boolean> {
+    return new Promise(resolve => resolve(this.eve.isSessionValid()));
   }
 }

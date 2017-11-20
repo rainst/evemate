@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { EveService } from './eve.service';
-import { EveSession } from "./evesession.class";
 import { LocationService } from './location.service';
 
 @Component({
@@ -8,19 +6,12 @@ import { LocationService } from './location.service';
 })
 
 export class UserComponent {
-  accessToken: string;
-  eveSession: EveSession;
-  characterPortraits: any;
   
   constructor(
-    private location: LocationService,
-    private eve: EveService
+    private location: LocationService
   ) {}
   
   ngOnInit(): void {
-    this.accessToken = this.eve.getAccessToken();
-    this.eveSession = this.eve.getSession();
     this.location.set('EVE Mate - User page');
-    // this.eve.getCharacterPortraits().then(characterPortraits => this.characterPortraits = characterPortraits);
   }
 }

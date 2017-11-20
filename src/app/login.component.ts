@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { EveService } from './eve.service';
+import { EveSSOService, EveSession } from './evesso.service';
 import { LocationService } from './location.service';
 
 @Component({
@@ -9,36 +9,33 @@ import { LocationService } from './location.service';
 
 
 export class LoginComponent {
-  loginUrl: string;
+  loginURL: string;
+  session: EveSession;
+  error: any;
   
   constructor (
     private router: Router,
     private location: LocationService,
     private route: ActivatedRoute,
-    private eve: EveService
+    private eveSSO: EveSSOService
   ) {}
   
-  ngOnInit() {
-    if (this.route.snapshot.fragment) {
-      var params = {};
-      this.location.set('EVE Mate - Login');
-
-      if (this.route.snapshot.fragment) {
-        this.route.snapshot.fragment.split('&').forEach(pair => {
-          var item = pair.split('=');
-          params[item[0]] = item[1];
-        });
+  ngOnInit() { 
+    this.location.set('EVE Mate - Login');
+    this.eveSSO.getSession().then(session => {
+      if (session)
+        this.session = session;
+      else if (this.route.snapshot.fragment) {
+        var authResults: any = {};
+        this.route.snapshot.fragment.split('&').forEach(element => authResults[element.split('=')[0]] = element.split('=')[1]);
+        if (authResults.access_token)
+          this.eveSSO.createSession(authResults.access_token).then(session => this.session = session, e => {
+            this.error = e.json();
+            this.loginURL = this.eveSSO.getAuthURL();
+          });
       }
-
-      if (params['access_token'])
-        this.eve.createSession(params['access_token']).then(res => this.router.navigate(['/user']));
-    }
-    else
-      this.eve.isSessionActive().then(isActive => {
-        if (isActive)
-          this.router.navigate(['/user']);
-        else 
-          this.loginUrl = this.eve.getLoginUrl();
-      });
+      else
+        this.loginURL = this.eveSSO.getAuthURL();
+    });
   }
 }

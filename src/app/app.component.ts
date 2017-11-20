@@ -1,5 +1,5 @@
 import { Component, OnInit , OnDestroy } from '@angular/core';
-import { EveService } from './eve.service';
+import { EveSSOService, EveSession } from './evesso.service';
 import { Subscription } from 'rxjs/Subscription';
 import { EveStatusService, EveStatus } from './evestatus.service';
 
@@ -9,14 +9,16 @@ import { EveStatusService, EveStatus } from './evestatus.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  isSessionActive: boolean;
-  eveTime = new Date();
+  eveTime: Date = new Date();
   serverStatus: EveStatus;
+  session: EveSession;
+  sessionTime: string;
 
   private eveTimeInterval;
   private isSessionActiveSubscription: Subscription;
+
   constructor(
-    private eve: EveService,
+    private eve: EveSSOService,
     private status: EveStatusService
   ) {}
 
@@ -24,11 +26,21 @@ export class AppComponent {
     this.startEveInterval();
     this.status.get().then(status => this.serverStatus = status);
     
-    this.isSessionActiveSubscription = this.eve.getSessionActiveSubject().subscribe(isActive => this.isSessionActive = isActive);
+    this.isSessionActiveSubscription = this.eve.getSessionActiveObserver().subscribe(isActive => {
+      console.log('isactive: ' + isActive);
+      if (isActive)
+        this.eve.getSession().then(session => this.session = session);
+      else
+        this.session = null;
+    });
+    this.eve.getSession();
   }
-
+  
   startEveInterval(): void {
-    this.eveTimeInterval = setInterval((a) => {
+    this.eveTimeInterval = setInterval(() => {
+      if (this.session)
+        this.sessionTime = Math.floor(this.session.validFor()/1000).toString() + ' s';
+
       this.eveTime = new Date();
     }, 1000);
   }
