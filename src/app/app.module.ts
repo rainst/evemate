@@ -6,7 +6,8 @@ import { HttpModule } from '@angular/http';
 
 import { EveSSOService } from './evesso.service';
 import { CookieService } from 'ngx-cookie-service';
-import { AuthGuard } from "./authguard.service";
+import { AuthGuard } from './authguard.service';
+import { ParamsGuard } from './paramsguard.service'
 import { EveCharactersService } from './evecharacters.service';
 import { EveTypesService } from './evetypes.service';
 import { EveSystemsService } from './evesystems.service';
@@ -28,7 +29,8 @@ import { LocationService } from './location.service';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login.component';
 import { UserComponent } from './user.component';
-import { SkillsComponent } from './skills.component';
+import { UserSkillsComponent } from './userskills.component';
+import { UserMiningComponent } from './usermining.component';
 import { ItemComponent } from "./item.component";
 import { DetailsComponent } from './details.component';
 import { SearchComponent } from './search.component';
@@ -49,8 +51,16 @@ import { HomeComponent } from './home.component';
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'skills', component: SkillsComponent, canActivate: [AuthGuard]},
-  { path: 'user', component: UserComponent, canActivate: [AuthGuard]},
+  { path: 'user', component: UserComponent, canActivate: [AuthGuard], canActivateChild: [ParamsGuard],
+    children: [
+      { path: 'skills', component: UserSkillsComponent },
+      { path: 'industry', component: PageNotFoundComponent },
+      { path: 'fleet', component: PageNotFoundComponent },
+      { path: 'killmails', component: PageNotFoundComponent },
+      { path: 'assets', component: PageNotFoundComponent },
+      { path: 'clones', component: PageNotFoundComponent }
+    ]
+  },
   { path: 'item/:id', component: ItemComponent},
   { path: 'details/:id', component: DetailsComponent},
   { path: 'character/:id', component: CharacterComponent},
@@ -74,7 +84,8 @@ const appRoutes: Routes = [
     AppComponent,
     LoginComponent,
     UserComponent,
-    SkillsComponent,
+    UserSkillsComponent,
+    UserMiningComponent,
     ItemComponent,
     DetailsComponent,
     CharacterComponent,
@@ -99,7 +110,7 @@ const appRoutes: Routes = [
     HttpModule,
     RouterModule.forRoot(appRoutes, { enableTracing: false })
   ],
-  providers: [EveSSOService, LocationService, EveStatusService, EveSearchService, EveAPIService, EveNamesService, CookieService, AuthGuard, EveStationsService, EveFactionsService, EveCorporationsService, EveAlliancesService, EveMoonsService, EveSovereigntyService, EveCharactersService, EvePlanetsService, EveTypesService, EveSystemsService, EveRegionsService, EveConstellationsService],
+  providers: [EveSSOService, ParamsGuard, LocationService, EveStatusService, EveSearchService, EveAPIService, EveNamesService, CookieService, AuthGuard, EveStationsService, EveFactionsService, EveCorporationsService, EveAlliancesService, EveMoonsService, EveSovereigntyService, EveCharactersService, EvePlanetsService, EveTypesService, EveSystemsService, EveRegionsService, EveConstellationsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

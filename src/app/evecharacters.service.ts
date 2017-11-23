@@ -70,6 +70,70 @@ export class Job extends BaseEveModel {
   successful_runs?: number; // Number of successful runs for this job. Equal to runs unless this is an invention job
 }
 
+export class Contract extends BaseEveModel {
+  contract_id: number; // contract_id integer ,
+  issuer_id: number; // Character ID for the issuer ,
+  issuer_corporation_id: number; // Character's corporation ID for the issuer ,
+  assignee_id: number; // ID to whom the contract is assigned, can be corporation or character ID ,
+  acceptor_id: number; // Who will accept the contract ,
+  start_location_id?: number; // Start location ID (for Couriers contract) ,
+  end_location_id?: number; // End location ID (for Couriers contract) ,
+  type: string; // Type of the contract = ['unknown', 'item_exchange', 'auction', 'courier', 'loan'],
+  status: string; // Status of the the contract = ['outstanding', 'in_progress', 'finished_issuer', 'finished_contractor', 'finished', 'cancelled', 'rejected', 'failed', 'deleted', 'reversed'],
+  title?: string; // Title of the contract ,
+  for_corporation: boolean; //true if the contract was issued on behalf of the issuer's corporation ,
+  availability: string; // To whom the contract is available = ['public', 'personal', 'corporation', 'alliance'],
+  date_issued: string; // Сreation date of the contract ,
+  date_expired: string; // Expiration date of the contract ,
+  date_accepted?: Date; //Date of confirmation of contract ,
+  days_to_complete?: number; // Number of days to perform the contract ,
+  date_completed?: Date; //Date of completed of contract ,
+  price?: number; // Price of contract (for ItemsExchange and Auctions) ,
+  reward?: number; // Remuneration for contract (for Couriers only) ,
+  collateral?: number; // Collateral price (for Couriers only) ,
+  buyout?: number; // Buyout price (for Auctions only) ,
+  volume?: number; // Volume of items in the contract
+}
+
+export class ContractItem extends BaseEveModel {
+  record_id: string; // Unique ID for the item ,
+  type_id: string; // Type ID for item ,
+  quantity: string; // Number of items in the stack ,
+  raw_quantity?: number; // -1 indicates that the item is a singleton (non-stackable). If the item happens to be a Blueprint, -1 is an Original and -2 is a Blueprint Copy ,
+  is_singleton: boolean; // is_singleton boolean ,
+  is_included: boolean; // true if the contract issuer has submitted this item with the contract, false if the isser is asking for this item in the contract.
+}
+
+export class ContractBid extends BaseEveModel {
+  bid_id: string; // Unique ID for the bid ,
+  bidder_id: string; // Character ID of the bidder ,
+  date_bid: Date; // Datetime when the bid was placed ,
+  amount: number; // The amount bid, in ISK
+}
+
+export class Skill extends BaseEveModel {
+}
+
+export class SkillList extends BaseEveModel {
+  skills: {
+    skill_id?: number; // skill_id integer ,
+    skillpoints_in_skill?: number; // skillpoints_in_skill integer ,
+    current_skill_level?: number; // current_skill_level integer
+  }[];
+  total_sp: number;
+}
+
+export class SkillQueue extends BaseEveModel {
+  skill_id: number; // skill_id integer ,
+  finish_date?: Date; // finish_date string ,
+  start_date?: Date; // start_date string ,
+  finished_level: number; // finished_level integer ,
+  queue_position: number; // queue_position integer ,
+  training_start_sp?: number; // training_start_sp integer ,
+  level_end_sp?: number; // level_end_sp integer ,
+  level_start_sp?: number; // Amount of SP that was in the skill when it started training it's current level. Used to calculate % of current level complete.
+}
+
 @Injectable()
 export class EveCharactersService {
   private characters: Map<number, Character> = new Map();
@@ -77,6 +141,9 @@ export class EveCharactersService {
   private fleets: Map<number, CharacterFleet> = new Map();
   private miningEvents: Map<number, MiningEvent[]> = new Map();
   private jobs: Map<number, Job[]> = new Map();
+  private contracts: Map<number, Contract[]> = new Map();
+  private contractItems: Map<number, ContractItem[]> = new Map;
+  private contractBids: Map<number, ContractBid[]> = new Map;
 
   private APICharactersPortrait ='characters/{character_id}/portrait/';
   private APICharacterAttributes = 'characters/{character_id}/attributes/';
@@ -87,6 +154,9 @@ export class EveCharactersService {
   private APICharacterFleet = 'characters/{character_id}/fleet/';
   private APICharacterMining = 'characters/{character_id}/mining/';
   private APICharacterJobs = 'characters/{character_id}/industry/jobs/';
+  private APICharacterContracts = 'characters/{character_id}/contracts/';
+  private APICharacterContractItems = 'characters/{character_id}/contracts/{contract_id}/items/';
+  private APICharacterContractBids = 'characters/{character_id}/contracts/{contract_id}/bids/';
   
   constructor(
     private api: EveAPIService,
@@ -105,6 +175,24 @@ export class EveCharactersService {
           this.characters.set(characterID, character);
           resolve(character);
         });
+    });
+  }
+
+  getSkills(characterID: number): Promise<SkillList> {
+    return new Promise(resolve => {
+      this.api.get(this.APICharacterSkills.replace('{character_id}', characterID.toString())).then(res => {
+        resolve(new SkillList(res.json()));
+      });
+    });
+  }
+
+  getSkillsQueue(characterID: number): Promise<SkillQueue[]> {
+    return new Promise(resolve => {
+      this.api.get(this.APICharacterSkillQueue.replace('{character_id}', characterID.toString())).then(res => {
+        var skills: SkillQueue[] = [];
+        res.json().forEach(skill => skills.push(new SkillQueue(skill)));
+        resolve(skills);
+      });
     });
   }
 

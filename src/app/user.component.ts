@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { LocationService } from './location.service';
 import { EveSSOService, EveSession } from './evesso.service';
-import { EveCharactersService, Character} from './evecharacters.service';
-
+import { EveCharactersService, Character, SkillList, SkillQueue} from './evecharacters.service';
+// import * as $ from '../../node_modules/jquery/dist/jquery.min.js';
+declare var $:any;
 @Component({
   templateUrl: './user.component.html'
 })
@@ -10,6 +11,8 @@ import { EveCharactersService, Character} from './evecharacters.service';
 export class UserComponent {
   session: EveSession;
   character: Character;
+  skills: SkillList;
+  skillQueue: SkillQueue;
 
   constructor(
     private location: LocationService,
@@ -23,9 +26,7 @@ export class UserComponent {
     this.eve.getSession().then(session => {
       this.session = session;
       this.characters.get(session.CharacterID).then(character => this.character = character);
-      this.characters.getJobs(session.CharacterID).then(console.log)
-      this.characters.getMining(session.CharacterID).then(console.log)
-      this.characters.getFleet(session.CharacterID).then(console.log, console.log);
+      // this.characters.getSkills(session.CharacterID);
     });
   }
 }

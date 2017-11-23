@@ -1,34 +1,31 @@
 <p *ngIf="character">{{character.name}}</p>
 <ul class="nav nav-tabs">
   <li class="nav-item">
-    <a class="nav-link active" href="#">Skills</a>
+    <a class="nav-link dropdown-toggle" data-toggle="dropdown" routerLink="/user/skills" routerLinkActive="active" role="button">Skills</a>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" [routerLink]="['/user/skills', {v: 'list'}]">Skill list</a>
+      <a class="dropdown-item" [routerLink]="['/user/skills', {v: 'queue'}]">Skill Queue</a>
+      <a class="dropdown-item" [routerLink]="['/user/skills', {v: 'attributes'}]">Attributes</a>
+    </div>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Mining</a>
+    <a class="nav-link dropdown-toggle" data-toggle="dropdown" routerLink="/user/industry" routerLinkActive="active">Industry</a>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" [routerLink]="['/user/industry', {v: 'jobs'}]">Jobs</a>
+      <a class="dropdown-item" [routerLink]="['/user/industry', {v: 'mining'}]">Mining Ledger</a>
+    </div>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Jobs</a>
+    <a class="nav-link" routerLink="/user/fleet" routerLinkActive="active">Current fleet</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Current fleet</a>
+    <a class="nav-link" routerLink="/user/killmails" routerLinkActive="active">Killmails</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Killmails</a>
+    <a class="nav-link" routerLink="/user/assets" routerLinkActive="active">Assets</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#">Assets</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#">Clones</a>
+    <a class="nav-link" routerLink="/user/clones" routerLinkActive="active">Clones</a>
   </li>
 </ul>
-
-<nav aria-label="Page navigation example">
-  <ul class="pagination">
-    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-  </ul>
-</nav>
+<router-outlet></router-outlet>
