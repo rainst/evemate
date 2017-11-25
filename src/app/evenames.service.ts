@@ -18,7 +18,19 @@ export class EveNamesService {
    //  Solar Systems, Constellations, Regions, Types.
    getNames(itemIDs: number[]): Promise<NameModel[]> {
     return new Promise(resolve => {
-      this.api.post(this.APIUniverseNames, itemIDs).then(result => resolve(result.json()));
+      var uniqueIDs = Array.from(new Set(itemIDs));
+      this.api.post(this.APIUniverseNames, uniqueIDs).then(result => resolve(result.json()));
+    });
+  }
+
+  getNamesMap(itemIDs: number[]): Promise<{[id:number]: NameModel}> {
+    return new Promise(resolve => {
+      this.getNames(itemIDs).then(names => {
+        var mappedNames: {[id:number]: NameModel} = {};
+        names.forEach(name => mappedNames[name.id] = name);
+
+        resolve(mappedNames);
+      });
     });
   }
 }

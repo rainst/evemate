@@ -1,4 +1,57 @@
-<p>Fapping
-Sleeping
-Eating
-Jamming</p>
+<div [ngSwitch]="view">
+  <p>Please note that skills and attributes are updated every 2 minutes</p>
+  <div *ngSwitchCase="'list'">
+    <p *ngIf="! (skillList && skillListNames)">Loading character's skills..</p>
+    <table class="table table-hover table-sm" *ngIf="skillList && skillListNames">
+      <thead>
+        <tr>
+          <th scope="col">Skills ({{skillList.skills.length}})</th>
+          <th scope="col">Skill points ({{skillList.total_sp}})</th>
+          <th scope="col">Level</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let skill of skillList.skills">
+          <td>{{skillListNames[skill.skill_id].name}}</td>
+          <td>{{skill.skillpoints_in_skill}}</td>
+          <td>{{skill.current_skill_level}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngSwitchCase="'queue'">
+    <p *ngIf="! skillQueue">Loading character's skills queue..</p>
+    <table class="table table-hover table-sm" *ngIf="skillQueue && skillQueueNames">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Skills ({{skillQueue.length}})</th>
+          <th scope="col">Training time (total: {{getTotalTraining()}})</th>
+          <th scope="col">Level</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let skill of skillQueue">
+          <td>{{skill.queue_position}}</td>
+          <td>{{skillQueueNames[skill.skill_id].name}}</td>
+          <td>{{skill.getTrainingTimeLeft()}} -> <small>{{skill.finish_date}}</small></td>
+          <td>{{skill.finished_level}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngSwitchCase="'attributes'">
+    <p *ngIf="! attributes">Loading character's attributes..</p>
+    <ul *ngIf="attributes" class="list-unstyled">
+      <li>Charisma: {{attributes.charisma}}</li>
+      <li>Intelligence: {{attributes.intelligence}}</li>
+      <li>Memory: {{attributes.memory}}</li>
+      <li>Perception: {{attributes.perception}}</li>
+      <li>Willpower: {{attributes.willpower}}</li>
+      <li>Remaps left: {{attributes.bonus_remaps}}</li>
+      <li>Last remap: {{attributes.last_remap_date}}</li>
+      <li>Next remap will be available after: {{attributes.accrued_remap_cooldown_date}}</li>
+    </ul>
+
+  </div>
+</div>

@@ -111,9 +111,6 @@ export class ContractBid extends BaseEveModel {
   amount: number; // The amount bid, in ISK
 }
 
-export class Skill extends BaseEveModel {
-}
-
 export class SkillList extends BaseEveModel {
   skills: {
     skill_id?: number; // skill_id integer ,
@@ -131,8 +128,50 @@ export class SkillQueue extends BaseEveModel {
   queue_position: number; // queue_position integer ,
   training_start_sp?: number; // training_start_sp integer ,
   level_end_sp?: number; // level_end_sp integer ,
-  level_start_sp?: number; // Amount of SP that was in the skill when it started training it's current level. Used to calculate % of current level complete.
+  level_start_sp?: number; // Amount of SP that was in the skill when it started training its current level. Used to calculate % of current level complete.
+
+  constructor (rawData: any) {
+    super(rawData);
+
+    if (rawData.start_date)
+      this.start_date = new Date(rawData.start_date);
+
+    if (rawData.finish_date)
+      this.finish_date = new Date(rawData.finish_date);
+  }
+
+  getTrainingTimeLeft(): number {
+    var finish = this.finish_date.getTime() - ((new Date().getTime() > this.start_date.getTime()) ? new Date().getTime() : this.start_date.getTime());
+    return Math.round(finish/1000);
+  }
+
+  getPercent():number {
+    return (this.training_start_sp - this.level_start_sp) / this.level_end_sp
+  }
 }
+
+export class Attributes extends BaseEveModel {
+  charisma: number; // charisma integer
+  intelligence: number; // intelligence integer
+  memory: number; // memory integer
+  perception: number; // perception integer
+  willpower: number; // willpower integer
+  bonus_remaps?: number; // Number of available bonus character neural remaps ,
+  last_remap_date: Date; // Datetime of last neural remap, including usage of bonus remaps ,
+  accrued_remap_cooldown_date: Date; // Neural remapping cooldown after a character uses remap accrued over time
+
+
+  constructor (rawData: any) {
+    super(rawData);
+
+    if (rawData.last_remap_date)
+      this.last_remap_date = new Date(rawData.last_remap_date);
+
+    if (rawData.accrued_remap_cooldown_date)
+      this.accrued_remap_cooldown_date = new Date(rawData.accrued_remap_cooldown_date);
+  }
+}
+
 
 @Injectable()
 export class EveCharactersService {
@@ -180,7 +219,7 @@ export class EveCharactersService {
 
   getSkills(characterID: number): Promise<SkillList> {
     return new Promise(resolve => {
-      this.api.get(this.APICharacterSkills.replace('{character_id}', characterID.toString())).then(res => {
+      this.api.get(this.APICharacterSkills.replace('{character_id}', characterID.toString()), {params: {token: this.eveSession.getToken()}}).then(res => {
         resolve(new SkillList(res.json()));
       });
     });
@@ -188,10 +227,18 @@ export class EveCharactersService {
 
   getSkillsQueue(characterID: number): Promise<SkillQueue[]> {
     return new Promise(resolve => {
-      this.api.get(this.APICharacterSkillQueue.replace('{character_id}', characterID.toString())).then(res => {
+      this.api.get(this.APICharacterSkillQueue.replace('{character_id}', characterID.toString()), {params: {token: this.eveSession.getToken()}}).then(res => {
         var skills: SkillQueue[] = [];
         res.json().forEach(skill => skills.push(new SkillQueue(skill)));
         resolve(skills);
+      });
+    });
+  }
+
+  getAttributes(characterID: number): Promise<Attributes> {
+    return new Promise(resolve => {
+      this.api.get(this.APICharacterAttributes.replace('{character_id}', characterID.toString()), {params: {token: this.eveSession.getToken()}}).then(res => {
+        resolve(new Attributes(res.json()));
       });
     });
   }

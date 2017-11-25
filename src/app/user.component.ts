@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LocationService } from './location.service';
 import { EveSSOService, EveSession } from './evesso.service';
-import { EveCharactersService, Character, SkillList, SkillQueue} from './evecharacters.service';
+import { EveCharactersService, Character, SkillList, SkillQueue, CharacterPortraits} from './evecharacters.service';
 
 declare var $:any;
 @Component({
@@ -11,8 +11,7 @@ declare var $:any;
 export class UserComponent {
   session: EveSession;
   character: Character;
-  skills: SkillList;
-  skillQueue: SkillQueue;
+  characterPortraits: CharacterPortraits;
 
   constructor(
     private location: LocationService,
@@ -26,6 +25,7 @@ export class UserComponent {
     this.eve.getSession().then(session => {
       this.session = session;
       this.characters.get(session.CharacterID).then(character => this.character = character);
+      this.characters.getPortraits(session.CharacterID).then(portraits => this.characterPortraits = portraits);
     });
   }
 }

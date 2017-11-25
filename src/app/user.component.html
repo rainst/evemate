@@ -1,31 +1,50 @@
-<p *ngIf="character">{{character.name}}</p>
-<ul class="nav nav-tabs">
-  <li class="nav-item">
-    <a class="nav-link dropdown-toggle" data-toggle="dropdown" routerLink="/user/skills" routerLinkActive="active" role="button">Skills</a>
-    <div class="dropdown-menu">
-      <a class="dropdown-item" [routerLink]="['/user/skills', {v: 'list'}]">Skill list</a>
-      <a class="dropdown-item" [routerLink]="['/user/skills', {v: 'queue'}]">Skill Queue</a>
-      <a class="dropdown-item" [routerLink]="['/user/skills', {v: 'attributes'}]">Attributes</a>
-    </div>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link dropdown-toggle" data-toggle="dropdown" routerLink="/user/industry" routerLinkActive="active">Industry</a>
-    <div class="dropdown-menu">
-      <a class="dropdown-item" [routerLink]="['/user/industry', {v: 'jobs'}]">Jobs</a>
-      <a class="dropdown-item" [routerLink]="['/user/industry', {v: 'mining'}]">Mining Ledger</a>
-    </div>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" routerLink="/user/fleet" routerLinkActive="active">Current fleet</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" routerLink="/user/killmails" routerLinkActive="active">Killmails</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" routerLink="/user/assets" routerLinkActive="active">Assets</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" routerLink="/user/clones" routerLinkActive="active">Clones</a>
-  </li>
-</ul>
-<router-outlet></router-outlet>
+<div class="row">
+  <div class="col-md-auto">
+    <img *ngIf="characterPortraits" src={{characterPortraits.px64x64}}>
+  </div>
+  <div class="col">
+    <ul class="list-unstyled">
+      <li *ngIf="character">{{character.name}}</li>
+      <li *ngIf="character">{{character.description}}</li>
+      <li *ngIf="character">Created: <small>{{character.birthday}}</small></li>
+    </ul>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" routerLink="/user/skills" routerLinkActive="active" role="button">Skills</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" [routerLink]="['/user/skills', {v: 'list'}]">Skill list</a>
+          <a class="dropdown-item" [routerLink]="['/user/skills', {v: 'queue'}]">Skill Queue</a>
+          <a class="dropdown-item" [routerLink]="['/user/skills', {v: 'attributes'}]">Attributes</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" routerLink="/user/industry" routerLinkActive="active">Industry</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" [routerLink]="['/user/industry', {v: 'jobs'}]">Jobs</a>
+          <a class="dropdown-item" [routerLink]="['/user/industry', {v: 'mining'}]">Mining Ledger</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/user/fleet" routerLinkActive="active">Current fleet</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/user/killmails" routerLinkActive="active">Killmails</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/user/assets" routerLinkActive="active">Assets</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/user/clones" routerLinkActive="active">Clones</a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="row">
+  <div class="col">
+    <router-outlet></router-outlet>
+  </div>
+</div>
