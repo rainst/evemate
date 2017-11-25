@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LocationService } from './location.service';
 import { EveSSOService, EveSession } from './evesso.service';
 import { EveCharactersService, Character, SkillList, SkillQueue} from './evecharacters.service';
-// import * as $ from '../../node_modules/jquery/dist/jquery.min.js';
+
 declare var $:any;
 @Component({
   templateUrl: './user.component.html'
@@ -26,7 +26,6 @@ export class UserComponent {
     this.eve.getSession().then(session => {
       this.session = session;
       this.characters.get(session.CharacterID).then(character => this.character = character);
-      // this.characters.getSkills(session.CharacterID);
     });
   }
 }

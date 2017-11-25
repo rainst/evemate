@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate } from '@angular/router';
+import { Router, CanActivate } from '@angular/router';
 import { EveSSOService, EveSession } from './evesso.service';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router/src/router_state';
 
@@ -7,10 +7,16 @@ import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router/src
 
 export class AuthGuard implements CanActivate {
   constructor (
-    private eve: EveSSOService
+    private router: Router,
+    private eveSession: EveSSOService
   ) {}
   
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    return new Promise(resolve => resolve(this.eve.isSessionValid()));
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    if (! this.eveSession.isSessionValid()) {
+      this.eveSession.loginRedirect = state.url;
+      this.router.navigate(['/login']);
+    }
+
+    return this.eveSession.isSessionValid();
   }
 }

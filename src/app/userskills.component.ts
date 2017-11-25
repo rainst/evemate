@@ -13,7 +13,6 @@ export class UserSkillsComponent implements OnInit {
 
   ngOnInit() { 
     this.route.params.subscribe(params => {
-      console.log(params);
     })
   }
 }

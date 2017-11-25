@@ -49,19 +49,21 @@ export class EveSSOService {
 
   private sessionActiveSubject: ReplaySubject<boolean> = new ReplaySubject();
   private sessionTimer: Subscription;
-
+  
+  loginRedirect: string;
+  
   constructor(
     private cookies: CookieService,
     private http: Http
   ) { }
 
-  getAuthURL(state?: string): string {
+  getAuthURL(): string {
     var authURL = this.authURL;
     authURL += '?client_id=' + (window.location.hostname === 'localhost' ? this.clientID_dev : this.clientID);
+    authURL += '&state=' + (this.loginRedirect || '');
     authURL += '&response_type=' + this.responseType;
     authURL += '&scope=' + encodeURIComponent(this.scopes);
     authURL += '&redirect_uri=' + encodeURIComponent(window.location.origin + '/' + this.redirectLocation);
-    authURL += '&state=' + (state || 'login');
 
     return authURL;
   }
@@ -73,6 +75,7 @@ export class EveSSOService {
         this.accessToken = accessToken;
         this.cookies.set('access_token', accessToken, this.session.ExpiresOn);
         this.sessionActiveSubject.next(true);
+
         if (this.sessionTimer && !this.sessionTimer.closed)
           this.sessionTimer.unsubscribe();
         this.sessionTimer = Observable.timer(session.validFor()).subscribe(() => this.deleteSession());
@@ -89,7 +92,7 @@ export class EveSSOService {
       this.sessionTimer.unsubscribe();
 
     this.cookies.delete('access_token');
-    this.session = null;
+    this.session = undefined;
     this.sessionActiveSubject.next(false);
   }
 
@@ -102,7 +105,7 @@ export class EveSSOService {
       if (! this.isSessionValid())
         resolve();
       else if (this.session)
-        resolve(this.session)
+        resolve(this.session);
       else
         this.createSession(this.cookies.get('access_token')).then(resolve);
     });

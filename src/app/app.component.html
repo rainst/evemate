@@ -3,10 +3,10 @@
   <div class="navbar-nav">
     <a class="nav-item nav-link" routerLinkActive="active" routerLink="/search">Search</a>
     <a class="nav-item nav-link" routerLinkActive="active" routerLink="/regions">Region List</a>
-    <a class="nav-item nav-link" routerLinkActive="active" *ngIf="!session" routerLink='/login'>Login</a>
-    <a *ngIf="session" class="nav-item nav-link" routerLinkActive="active" routerLink="/user">Your character</a>
-      <!-- <a class="nav-item nav-link" routerLinkActive="active" routerLink="/user">Your corp</a> -->
-    <span *ngIf="session" class="nav-item nav-link" (click)="logout()">Logout</span>
+    <!-- <a class="nav-item nav-link" routerLinkActive="active" routerLink="/market">Market</a> -->
+    <a class="nav-item nav-link" routerLinkActive="active" routerLink="/user">Your character</a>
+    <!-- <a class="nav-item nav-link" routerLinkActive="active" routerLink="/corp">Your corp</a> -->
+    <a *ngIf="session" class="nav-item nav-link" [routerLink]="['login', {logout: true}]" (click)="session = undefined">Logout</a>
   </div>
 </nav>
 <header class="container-fluid mb-3">

@@ -27,11 +27,10 @@ export class AppComponent {
     this.status.get().then(status => this.serverStatus = status);
     
     this.isSessionActiveSubscription = this.eve.getSessionActiveObserver().subscribe(isActive => {
-      console.log('isactive: ' + isActive);
       if (isActive)
         this.eve.getSession().then(session => this.session = session);
       else
-        this.session = null;
+        this.session = undefined;
     });
     this.eve.getSession();
   }
@@ -43,10 +42,6 @@ export class AppComponent {
 
       this.eveTime = new Date();
     }, 1000);
-  }
-
-  logout(): void {
-    this.eve.deleteSession();
   }
 
   ngOnDestroy() {
