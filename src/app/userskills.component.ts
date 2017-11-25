@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { EveCharactersService, SkillList, SkillQueue, Attributes } from './evecharacters.service';
 import { EveSSOService, EveSession } from './evesso.service';
 import { EveNamesService, NameModel } from './evenames.service';
+import { LocationService } from './location.service';
 
 @Component({
   templateUrl: 'userskills.component.html'
@@ -21,11 +22,15 @@ export class UserSkillsComponent implements OnInit {
     private route: ActivatedRoute,
     private characters: EveCharactersService,
     private eveSSO: EveSSOService,
-    private names: EveNamesService
+    private names: EveNamesService,
+    private location: LocationService
   ) { }
 
   ngOnInit() {
-    this.route.params.subscribe(params => this.view = params.v || 'list');
+    this.route.params.subscribe(params => {
+      this.view = params.v || 'list',
+      this.location.set('EVE Mate - User Skills, ' + this.view);
+    });
     
     this.eveSSO.getSession().then(session => {
       this.session = session;
