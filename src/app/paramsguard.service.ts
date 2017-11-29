@@ -6,7 +6,8 @@ import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router/src
 export class ParamsGuard implements CanActivateChild {
   private routesWithParams: string[] = [
     'skills',
-    'industry'
+    'industry',
+    'assets'
   ];
 
   constructor () {}

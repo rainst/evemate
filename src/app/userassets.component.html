@@ -1,0 +1,88 @@
+<div [ngSwitch]="view">
+  <div *ngSwitchCase="'assets'">
+    <div *ngIf="assetList && assetList.length > 0">
+      <table class="table table-hover table-sm" *ngIf="assetList">
+        <thead>
+          <tr>
+            <th scope="col">Assets ({{assetList.length}})</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">location</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let asset of assetList">
+            <td>{{asset.item_id}}</td>
+            <td>{{asset.quantity}}</td>
+            <td>{{asset.location_id}} ({{asset.location_type}}) ({{asset.location_flag}})</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div *ngSwitchCase="'journal'">
+    <div *ngIf="journalList && journalList.length > 0">
+        <table class="table table-hover table-sm" *ngIf="journalList">
+            <thead>
+              <tr>
+                <th scope="col">Type</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Balance</th>
+                <th scope="col">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let journal of journalList">
+                <td>{{journal.ref_type}}</td>
+                <td>{{journal.amount}}</td>
+                <td>{{journal.balance}}</td>
+                <td><small>{{journal.date}}</small></td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+  </div>
+  <div *ngSwitchCase="'transactions'">
+    <div *ngIf="transactionList && transactionList.length > 0">
+        <table class="table table-hover table-sm" *ngIf="transactionList">
+            <thead>
+              <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Price</th>
+                <th scope="col">Location</th>
+                <th scope="col">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let transaction of transactionList">
+                <td>{{transaction.type_id}}</td>
+                <td>{{transaction.is_buy ? '-' : '+'}} {{transaction.unit_price}}</td>
+                <td>{{transaction.location_id}}</td>
+                <td><small>{{transaction.date}}</small></td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+  </div>
+  <div *ngSwitchCase="'contracts'">
+    <div *ngIf="contractList && contractList.length > 0">
+      <table class="table table-hover table-sm" *ngIf="assetList">
+        <thead>
+          <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Status</th>
+            <th scope="col">Type</th>
+            <th scope="col">Issued</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let contract of contractList">
+            <td>{{contract.title}}</td>
+            <td>{{contract.status}}</td>
+            <td>{{contract.type}}</td>
+            <td><small>{{contract.date_issued}}</small></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

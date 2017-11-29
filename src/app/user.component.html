@@ -29,13 +29,16 @@
         </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/user/fleet" routerLinkActive="active">Current fleet</a>
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" routerLink="/user/assets" routerLinkActive="active">Assets</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" [routerLink]="['/user/assets', {v: 'assets'}]">Assets</a>
+          <a class="dropdown-item" [routerLink]="['/user/assets', {v: 'journal'}]">Wallet Journal</a>
+          <a class="dropdown-item" [routerLink]="['/user/assets', {v: 'transactions'}]">Wallet Transactions</a>
+          <a class="dropdown-item" [routerLink]="['/user/assets', {v: 'contracts'}]">Contracts</a>
+        </div>
       </li>
       <li class="nav-item">
         <a class="nav-link" routerLink="/user/killmails" routerLinkActive="active">Killmails</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/user/assets" routerLinkActive="active">Assets</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" routerLink="/user/clones" routerLinkActive="active">Clones</a>

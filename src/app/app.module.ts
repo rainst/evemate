@@ -48,6 +48,7 @@ import { StationComponent } from './station.component';
 import { FactionComponent } from './faction.component';
 import { SystemsTableComponent } from './systemtable.component';
 import { HomeComponent } from './home.component';
+import { UserAssetsComponent } from './userassets.component';
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -55,9 +56,9 @@ const appRoutes: Routes = [
     children: [
       { path: 'skills', component: UserSkillsComponent },
       { path: 'industry', component: UserIndustryComponent },
+      { path: 'assets', component: UserAssetsComponent },
       { path: 'fleet', component: PageNotFoundComponent },
       { path: 'killmails', component: PageNotFoundComponent },
-      { path: 'assets', component: PageNotFoundComponent },
       { path: 'clones', component: PageNotFoundComponent }
     ]
   },
@@ -102,7 +103,8 @@ const appRoutes: Routes = [
     FactionComponent,
     StationComponent,
     SystemsTableComponent,
-    HomeComponent
+    HomeComponent,
+    UserAssetsComponent
   ],
   imports: [
     BrowserModule,
