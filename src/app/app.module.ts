@@ -30,7 +30,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login.component';
 import { UserComponent } from './user.component';
 import { UserSkillsComponent } from './userskills.component';
-import { UserMiningComponent } from './usermining.component';
+import { UserIndustryComponent } from './userindustry.component';
 import { ItemComponent } from "./item.component";
 import { DetailsComponent } from './details.component';
 import { SearchComponent } from './search.component';
@@ -54,7 +54,7 @@ const appRoutes: Routes = [
   { path: 'user', component: UserComponent, canActivate: [AuthGuard], canActivateChild: [ParamsGuard],
     children: [
       { path: 'skills', component: UserSkillsComponent },
-      { path: 'industry', component: PageNotFoundComponent },
+      { path: 'industry', component: UserIndustryComponent },
       { path: 'fleet', component: PageNotFoundComponent },
       { path: 'killmails', component: PageNotFoundComponent },
       { path: 'assets', component: PageNotFoundComponent },
@@ -85,7 +85,7 @@ const appRoutes: Routes = [
     LoginComponent,
     UserComponent,
     UserSkillsComponent,
-    UserMiningComponent,
+    UserIndustryComponent,
     ItemComponent,
     DetailsComponent,
     CharacterComponent,

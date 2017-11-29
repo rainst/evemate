@@ -43,6 +43,13 @@ export class MiningEvent extends BaseEveModel {
   solar_system_id: number; // solar_system_id integer ,
   type_id: number; // type_id integer ,
   quantity: number; // quantity integer
+
+  constructor(rawData: any) {
+    super(rawData);
+
+    if (rawData.date)
+      this.date = new Date(rawData.date);
+  }
 }
 
 export class Job extends BaseEveModel {
@@ -68,6 +75,19 @@ export class Job extends BaseEveModel {
   completed_date?: Date; // Date and time when this job was completed ,
   completed_character_id?: number; // ID of the character which completed this job ,
   successful_runs?: number; // Number of successful runs for this job. Equal to runs unless this is an invention job
+
+  constructor(rawData: any) {
+    super(rawData);
+
+    if (rawData.start_date)
+      this.start_date = new Date(rawData.start_date);
+    if (rawData.end_date)
+      this.end_date = new Date(rawData.end_date);
+    if (rawData.pause_date)
+      this.pause_date = new Date(rawData.pause_date);
+    if (rawData.completed_date)
+      this.completed_date = new Date(rawData.completed_date);
+  }
 }
 
 export class Contract extends BaseEveModel {

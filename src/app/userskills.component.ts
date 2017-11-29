@@ -15,7 +15,7 @@ export class UserSkillsComponent implements OnInit {
   skillQueue: SkillQueue[];
   skillQueueNames: {[id: number]: NameModel};
   attributes: Attributes;
-  view: 'string';
+  view: string;
   
   constructor(
     private router: Router,
@@ -28,7 +28,7 @@ export class UserSkillsComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.view = params.v || 'list',
+      this.view = params.v || 'list';
       this.location.set('EVE Mate - User Skills, ' + this.view);
     });
     

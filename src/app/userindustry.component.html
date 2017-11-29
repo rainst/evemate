@@ -1,0 +1,14 @@
+<div [ngSwitch]="view">
+  <div *ngSwitchCase="'jobs'">
+    <div *ngIf="jobList && jobList.length > 0">
+      <p>you have jobs</p>
+    </div>
+    <p *ngIf="jobList && jobList.length === 0">You have no jobs running.</p>
+  </div>
+  <div *ngSwitchCase="'mining'">
+    <div *ngIf="miningList && miningList.length > 0">
+      <p>you have mining events!</p>
+    </div>
+    <p *ngIf="miningList && miningList.length === 0">Looks like you haven't been mining in the last month.</p>
+  </div>
+</div>
