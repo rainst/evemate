@@ -25,6 +25,7 @@ import { EveAPIService } from './eveapi.service';
 import { EveSearchService } from './evesearch.service';
 import { EveStatusService } from './evestatus.service';
 import { LocationService } from './location.service';
+import { EveKillmailsService } from './evekillmails.service';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login.component';
@@ -49,6 +50,7 @@ import { FactionComponent } from './faction.component';
 import { SystemsTableComponent } from './systemtable.component';
 import { HomeComponent } from './home.component';
 import { UserAssetsComponent } from './userassets.component';
+import { UserKillmailsComponent } from './userkillmails.component';
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -57,8 +59,8 @@ const appRoutes: Routes = [
       { path: 'skills', component: UserSkillsComponent },
       { path: 'industry', component: UserIndustryComponent },
       { path: 'assets', component: UserAssetsComponent },
+      { path: 'killmails', component: UserKillmailsComponent },
       { path: 'fleet', component: PageNotFoundComponent },
-      { path: 'killmails', component: PageNotFoundComponent },
       { path: 'clones', component: PageNotFoundComponent }
     ]
   },
@@ -104,7 +106,8 @@ const appRoutes: Routes = [
     StationComponent,
     SystemsTableComponent,
     HomeComponent,
-    UserAssetsComponent
+    UserAssetsComponent,
+    UserKillmailsComponent
   ],
   imports: [
     BrowserModule,
@@ -112,7 +115,7 @@ const appRoutes: Routes = [
     HttpModule,
     RouterModule.forRoot(appRoutes, { enableTracing: false })
   ],
-  providers: [EveSSOService, ParamsGuard, LocationService, EveStatusService, EveSearchService, EveAPIService, EveNamesService, CookieService, AuthGuard, EveStationsService, EveFactionsService, EveCorporationsService, EveAlliancesService, EveMoonsService, EveSovereigntyService, EveCharactersService, EvePlanetsService, EveTypesService, EveSystemsService, EveRegionsService, EveConstellationsService],
+  providers: [EveSSOService, EveKillmailsService, ParamsGuard, LocationService, EveStatusService, EveSearchService, EveAPIService, EveNamesService, CookieService, AuthGuard, EveStationsService, EveFactionsService, EveCorporationsService, EveAlliancesService, EveMoonsService, EveSovereigntyService, EveCharactersService, EvePlanetsService, EveTypesService, EveSystemsService, EveRegionsService, EveConstellationsService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
