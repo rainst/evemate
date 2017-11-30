@@ -29,27 +29,27 @@ export class LoginComponent {
         this.info = 'You have logged off successfully!';
         this.eveSSO.deleteSession();
       }
-
-      this.eveSSO.getSession().then(session => {
-        this.session = session;
-        
-        if (this.route.snapshot.fragment) {
-          var authResults: any = {};
-          this.route.snapshot.fragment.split('&').forEach(element => authResults[element.split('=')[0]] = element.split('=')[1]);
-          if (authResults.access_token)
-            this.eveSSO.createSession(authResults.access_token).then(session => {
-                this.session = session;
-  
-                if (authResults.state)
-                  this.router.navigateByUrl(decodeURIComponent(authResults.state));
-              }, e => {
-                this.error = e.json();
-                this.loginURL = this.eveSSO.getAuthURL();
-            });
-        }
-        else if (! session)
-          this.loginURL = this.eveSSO.getAuthURL();
-      });
+      else
+        this.eveSSO.getSession().then(session => {
+          this.session = session;
+          
+          if (this.route.snapshot.fragment) {
+            var authResults: any = {};
+            this.route.snapshot.fragment.split('&').forEach(element => authResults[element.split('=')[0]] = element.split('=')[1]);
+            if (authResults.access_token)
+              this.eveSSO.createSession(authResults.access_token).then(session => {
+                  this.session = session;
+    
+                  if (authResults.state)
+                    this.router.navigateByUrl(decodeURIComponent(authResults.state));
+                }, e => {
+                  this.error = e.json();
+                  this.loginURL = this.eveSSO.getAuthURL();
+              });
+          }
+          else if (! session)
+            this.loginURL = this.eveSSO.getAuthURL();
+        });
     });
   }
 }
