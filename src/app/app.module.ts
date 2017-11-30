@@ -51,6 +51,7 @@ import { SystemsTableComponent } from './systemtable.component';
 import { HomeComponent } from './home.component';
 import { UserAssetsComponent } from './userassets.component';
 import { UserKillmailsComponent } from './userkillmails.component';
+import { UserClonesComponent } from './userclones.component';
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -60,8 +61,8 @@ const appRoutes: Routes = [
       { path: 'industry', component: UserIndustryComponent },
       { path: 'assets', component: UserAssetsComponent },
       { path: 'killmails', component: UserKillmailsComponent },
-      { path: 'fleet', component: PageNotFoundComponent },
-      { path: 'clones', component: PageNotFoundComponent }
+      { path: 'clones', component: UserClonesComponent },
+      { path: 'fleet', component: PageNotFoundComponent }
     ]
   },
   { path: 'item/:id', component: ItemComponent },
@@ -107,7 +108,8 @@ const appRoutes: Routes = [
     SystemsTableComponent,
     HomeComponent,
     UserAssetsComponent,
-    UserKillmailsComponent
+    UserKillmailsComponent,
+    UserClonesComponent
   ],
   imports: [
     BrowserModule,

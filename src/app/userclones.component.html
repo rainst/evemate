@@ -1,0 +1,23 @@
+<div *ngIf="clones">
+  <ul class="list-unstyled">
+    <li>Home station: {{clones.home_location.location_id}}</li>
+    <li>Last clone jump: <small>{{clones.last_jump_date}}</small></li>
+    <li>Active clone implants: {{implants}}</li>
+  </ul>
+  <table class="table table-hover table-sm" *ngIf="clones.jump_clones.length > 0">
+    <thead>
+      <tr>
+        <th scope="col">Station</th>
+        <th scope="col">Location</th>
+        <th scope="col">Implants</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let clone of clones.jump_clones">
+        <td>{{clone.location_type}}</td>
+        <td>{{clone.location_id}}</td>
+        <td>{{clone.implants}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

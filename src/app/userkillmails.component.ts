@@ -4,8 +4,6 @@ import { LocationService } from './location.service';
 import { EveSSOService, EveSession } from './evesso.service';
 import { EveKillmailsService, Killmail } from './evekillmails.service';
 
-
-
 @Component({
   templateUrl: 'userkillmails.component.html'
 })

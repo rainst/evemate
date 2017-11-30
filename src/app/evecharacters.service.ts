@@ -281,6 +281,26 @@ export class WalletTransaction extends BaseEveModel {
   }
 }
 
+export class CloneDetails extends BaseEveModel {
+  last_jump_date?: Date; // last_jump_date string ,
+  home_location: {
+    location_id?: number; // location_id integer ,
+    location_type?: string; // location_type string = ['station', 'structure']
+  }
+  jump_clones: {
+    location_id?: number; // location_id integer ,
+    location_type?: string; // location_type string = ['station', 'structure'],
+    implants?: number[]; // (Array[integer], optional): implants array
+  }[]
+
+  constructor(rawItem) {
+    super(rawItem);
+
+    if (rawItem.last_jump_date)
+      this.last_jump_date = new Date(rawItem.last_jump_date);
+  }
+}
+
 @Injectable()
 export class EveCharactersService {
   private characters: Map<number, Character> = new Map();
@@ -309,6 +329,8 @@ export class EveCharactersService {
   private APICharacterWallet = 'characters/{character_id}/wallet/';
   private APICharacterWalletJournal = 'characters/{character_id}/wallet/journal/';
   private APICharacterWalletTransaction = 'characters/{character_id}/wallet/transactions/';
+  private APICharacterClones = 'characters/{character_id}/clones/';
+  private APICharacterImplants = 'characters/{character_id}/implants/';
   
   constructor(
     private api: EveAPIService,
@@ -460,6 +482,22 @@ export class EveCharactersService {
         res.json().forEach(asset => assets.push(new Asset(asset)));
 
         resolve(assets);
+      });
+    });
+  }
+
+  getClones(characterID: number): Promise<CloneDetails> {
+    return new Promise(resolve => {
+      this.api.get(this.APICharacterClones.replace('{character_id}', characterID.toString()), {params: {token: this.eveSession.getToken()}}).then(res => {
+        resolve(new CloneDetails(res.json()));
+      });
+    });
+  }
+
+  getImplants(characterID: number): Promise<number[]> {
+    return new Promise(resolve => {
+      this.api.get(this.APICharacterImplants.replace('{character_id}', characterID.toString()), {params: {token: this.eveSession.getToken()}}).then(res => {
+        resolve(res.json());
       });
     });
   }
