@@ -72,12 +72,11 @@ export class EveSearchService {
     new SearchFilter({ displayName: 'Characters', name: 'character'}),
     new SearchFilter({ displayName: 'Constellations', name: 'constellation'}),
     new SearchFilter({ displayName: 'Corporations', name: 'corporation'}),
-    // new SearchFilter({ displayName: 'Factions', name: 'faction'}), disabled since is not serchavle in evenames
-    new SearchFilter({ displayName: 'Items', name: 'inventorytype', localURL:'item'}),
+    new SearchFilter({ displayName: 'Factions', name: 'faction'}),
+    new SearchFilter({ displayName: 'Items', name: 'inventory_type', localURL:'item'}),
     new SearchFilter({ displayName: 'Regions', name: 'region'}),
-    new SearchFilter({ displayName: 'Solar systems', name: 'solarsystem'}),
+    new SearchFilter({ displayName: 'Solar systems', name: 'solar_system'}),
     // new SearchFilter({ displayName: 'Stations', name: 'station'}), //page missing
-    // new SearchFilter({ displayName: 'Wormholes', name: 'wormhole'}) //disabled since page is missing
   ];
   
   constructor(private api: EveAPIService) { }
