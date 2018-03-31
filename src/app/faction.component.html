@@ -5,8 +5,8 @@
     <li>Systems: {{faction.station_system_count}}</li>
     <li>Total stations: {{faction.station_count}}</li>
     <li>Size factor: {{faction.size_factor}}</li>
-    <li *ngIf="militia">Militia corp: <a routerLink="/corporation/{{militia.id}}">{{militia.corporation_name}}</a></li>
-    <li *ngIf="corporation">Corporation: <a routerLink="/corporation/{{corporation.id}}">{{corporation.corporation_name}}</a></li>
+    <li *ngIf="militia">Militia corp: <a routerLink="/corporation/{{militia.id}}">{{militia.name}}</a></li>
+    <li *ngIf="corporation">Corporation: <a routerLink="/corporation/{{corporation.id}}">{{corporation.name}}</a></li>
     <li *ngIf="system">Home System: <a routerLink="/system/{{system.system_id}}">{{system.name}}</a></li>
   </ul>
 </div>

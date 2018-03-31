@@ -7,7 +7,7 @@ export class Corporation extends BaseEveModel {
   id: number;
   ceo_id: number;
   corporation_description: string;
-  corporation_name: string;
+  name: string;
   creator_id: number;
   member_count: number;
   tax_rate: number;

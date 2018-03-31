@@ -1,7 +1,7 @@
 <div *ngIf="alliance">
-  <h1><img *ngIf="icon" [src]="icon.px64x64">{{alliance.alliance_name}} [{{alliance.ticker}}]</h1>
+  <h1><img *ngIf="icon" [src]="icon.px64x64">{{alliance.name}} [{{alliance.ticker}}]</h1>
   <ul class="list-unstyled">
-    <li *ngIf="executor">Executor corp: <a routerLink="/corporation/{{executor.id}}">{{executor.corporation_name}}</a></li>
+    <li *ngIf="executor">Executor corp: <a routerLink="/corporation/{{executor.id}}">{{executor.name}}</a></li>
     <li>Founded: {{alliance.date_founded}}</li>
   </ul>
 </div>
@@ -15,7 +15,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let corporation of corporationsList">
-      <td><a routerLink="/corporation/{{corporation.id}}">{{corporation.corporation_name}}</a></td>
+      <td><a routerLink="/corporation/{{corporation.id}}">{{corporation.name}}</a></td>
       <td>{{corporation.member_count}}</td>
     </tr>
   </tbody>

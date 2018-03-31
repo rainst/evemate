@@ -33,7 +33,7 @@ export class CorporationComponent implements OnInit {
       
       this.corporations.get(this.corporationID).then(corporation => {
         this.corporation = corporation;
-        this.location.set('EVE Mate - Corporation: ' + this.corporation.corporation_name);
+        this.location.set('EVE Mate - Corporation: ' + this.corporation.name);
 
         if (corporation.ceo_id)
           this.characters.get(corporation.ceo_id).then(ceo => this.ceo = ceo);

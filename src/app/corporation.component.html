@@ -1,8 +1,8 @@
 <div *ngIf="corporation">
-  <h1><img *ngIf="icon" [src]="icon.px64x64">{{corporation.corporation_name}} [{{corporation.ticker}}]</h1>
+  <h1><img *ngIf="icon" [src]="icon.px64x64">{{corporation.name}} [{{corporation.ticker}}]</h1>
   <p>{{corporation.corporation_description}}</p>
   <ul class="list-unstyled">
-    <li *ngIf="alliance">Member of <a routerLink="/alliance/{{alliance.alliance_id}}">{{alliance.alliance_name}}</a></li>
+    <li *ngIf="alliance">Member of <a routerLink="/alliance/{{alliance.alliance_id}}">{{alliance.name}}</a></li>
     <li *ngIf="corporation.faction">Member of {{corporation.faction}}</li>
     <li *ngIf="corporation.creation_date">Founded: {{corporation.creation_date}}</li>
     <li *ngIf="founder">Founder: <a routerLink="/character/{{founder.id}}">{{founder.name}}</a></li>

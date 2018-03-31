@@ -31,8 +31,8 @@ export class AllianceComponent implements OnInit {
 
       this.alliances.get(allianceID).then(alliance => {
         this.alliance = alliance;
-        this.location.set('EVE Mate - Alliance: ' + this.alliance.alliance_name);
-        this.corporations.get(alliance.executor_corp).then(executor => this.executor = executor);
+        this.location.set('EVE Mate - Alliance: ' + this.alliance.name);
+        this.corporations.get(alliance.executor_corporation_id).then(executor => this.executor = executor);
       });
       
       this.alliances.getCorporations(allianceID).then(list => {
