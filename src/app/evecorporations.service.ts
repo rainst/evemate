@@ -6,8 +6,8 @@ import { EveAPIService } from './eveapi.service';
 export class Corporation extends BaseEveModel {
   id: number;
   ceo_id: number;
-  corporation_description: string;
-  corporation_name: string;
+  description: string;
+  name: string;
   creator_id: number;
   member_count: number;
   tax_rate: number;
@@ -20,8 +20,8 @@ export class Corporation extends BaseEveModel {
   constructor (rawData: any) {
     super(rawData);
 
-    if (rawData.corporation_description)
-      this.corporation_description = rawData.corporation_description.replace(/<\/?[^>]+(>|$)/g, "");
+    if (rawData.description)
+      this.description = rawData.description.replace(/<\/?[^>]+(>|$)/g, "");
 
     rawData.creation_date && (this.creation_date = new Date(rawData.creation_date));
   }

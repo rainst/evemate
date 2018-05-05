@@ -4,9 +4,9 @@ import { BaseEveModel } from './eve.class';
 
 export class Alliance extends BaseEveModel {
   alliance_id: number; //manually created since there's no reference to the id
-  alliance_name: string;
+  name: string;
   date_founded: Date;
-  executor_corp?: number; //the executor corporation ID, if this alliance is not closed
+  executor_corporation_id?: number; //the executor corporation ID, if this alliance is not closed
   ticker: string;
 
   constructor (rawData: any) {

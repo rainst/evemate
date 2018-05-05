@@ -14,8 +14,8 @@
   <h5>Sovereignty</h5>
   <ul class="list-unstyled">
     <li *ngIf="faction">Faction: <a routerLink="/faction/{{faction.faction_id}}">{{faction.name}}</a></li>
-    <li *ngIf="alliance">Alliance: <a routerLink="/alliance/{{alliance.alliance_id}}">{{alliance.alliance_name}} [{{alliance.ticker}}]</a><br></li>
-    <li *ngIf="corporation">Corporation: <a routerLink="/corporation/{{corporation.id}}">{{corporation.corporation_name}} [{{corporation.ticker}}]</a></li>
+    <li *ngIf="alliance">Alliance: <a routerLink="/alliance/{{alliance.alliance_id}}">{{alliance.name}} [{{alliance.ticker}}]</a><br></li>
+    <li *ngIf="corporation">Corporation: <a routerLink="/corporation/{{corporation.id}}">{{corporation.name}} [{{corporation.ticker}}]</a></li>
   </ul>
 </div>
 
