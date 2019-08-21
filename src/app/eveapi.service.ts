@@ -3,8 +3,8 @@ import { Headers, Http } from '@angular/http';
 
 @Injectable()
 export class EveAPIService {
-  private APIBase = 'https://esi.tech.ccp.is/latest/';
-  
+  private APIBase = 'https://esi.evetech.net/latest/';
+
   constructor(private http: Http) { }
 
   post(urlComponent: string, params: any): Promise<any> {
